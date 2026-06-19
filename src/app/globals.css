@@ -1,0 +1,303 @@
+@import "tailwindcss";
+
+/* ============================================================
+   ZÁKOUTÍ APARTMENTS — „Zlatý hřeben"
+   Bílo-zlatá butiková paleta. Zlatá = interpunkce, ne výplň.
+   ============================================================ */
+
+@theme {
+  /* Neutrály */
+  --color-paper: #fbfaf7;
+  --color-ivory: #f4f0e8;
+  --color-pure: #ffffff;
+  --color-line: #e8e1d3;
+  --color-stone: #8b857a;
+  --color-ink: #1c1b17;
+
+  /* Zlatá (rafinovaná, matná) */
+  --color-gold-100: #f2e9d2;
+  --color-gold-300: #e0cb94;
+  --color-gold-500: #c5a572;
+  --color-gold-700: #a6863f;
+  --color-gold-900: #7a6228;
+
+  /* Fonty — tokeny referencují --ff-* z next/font */
+  --font-display: var(--ff-display), Georgia, serif;
+  --font-body: var(--ff-body), system-ui, sans-serif;
+  --font-mono: var(--ff-mono), ui-monospace, monospace;
+}
+
+/* ---------- Base ---------- */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    background: var(--color-gold-300);
+    color: var(--color-ink);
+  }
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+  }
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 2px solid var(--color-gold-700);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+}
+
+/* ---------- Typografická škála ---------- */
+@layer utilities {
+  .text-display-1 {
+    font-family: var(--font-display);
+    font-size: clamp(3.5rem, 8vw, 8.25rem);
+    line-height: 1;
+    letter-spacing: -0.025em;
+    font-weight: 400;
+  }
+  .text-display-2 {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    line-height: 1.04;
+    letter-spacing: -0.02em;
+    font-weight: 400;
+  }
+  .text-h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2.125rem, 4.5vw, 3.75rem);
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    font-weight: 500;
+  }
+  .text-h2 {
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 3.5vw, 2.75rem);
+    line-height: 1.14;
+    letter-spacing: -0.015em;
+    font-weight: 500;
+  }
+  .text-h3 {
+    font-family: var(--font-display);
+    font-size: clamp(1.375rem, 2.5vw, 1.875rem);
+    line-height: 1.2;
+    font-weight: 500;
+  }
+  .text-lead {
+    font-size: clamp(1.125rem, 1.5vw, 1.25rem);
+    line-height: 1.62;
+    font-weight: 400;
+  }
+  .text-body-lg {
+    font-size: 1.0625rem;
+    line-height: 1.72;
+  }
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-gold-900);
+  }
+  .mono {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+  .serif-italic {
+    font-family: var(--font-display);
+    font-style: italic;
+  }
+  .text-balance {
+    text-wrap: balance;
+  }
+  .text-pretty {
+    text-wrap: pretty;
+  }
+}
+
+/* ---------- Signature & dekorace ---------- */
+@layer utilities {
+  .media-scrim::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      to top right,
+      rgba(28, 27, 23, 0.82) 0%,
+      rgba(28, 27, 23, 0.42) 38%,
+      transparent 66%
+    );
+  }
+  .media-scrim-full::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      to top,
+      rgba(28, 27, 23, 0.74) 0%,
+      rgba(28, 27, 23, 0.22) 45%,
+      rgba(28, 27, 23, 0.08) 100%
+    );
+  }
+  .hairline-gold {
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      transparent,
+      rgba(197, 165, 114, 0.65) 18%,
+      rgba(197, 165, 114, 0.65) 82%,
+      transparent
+    );
+  }
+  .grain-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    pointer-events: none;
+    opacity: 0.035;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  }
+  .link-underline {
+    position: relative;
+  }
+  .link-underline::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 100%;
+    height: 1px;
+    background: var(--color-gold-500);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .link-underline:hover::after,
+  .link-underline:focus-visible::after {
+    transform: scaleX(1);
+  }
+}
+
+/* ---------- CSS-only marquee ---------- */
+@layer utilities {
+  .marquee {
+    display: flex;
+    width: max-content;
+    animation: marquee 38s linear infinite;
+    will-change: transform;
+  }
+  @keyframes marquee {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+}
+
+/* ---------- Tlačítka ---------- */
+@layer components {
+  .btn-gold {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.95rem 1.8rem;
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 0.95rem;
+    letter-spacing: 0.01em;
+    color: var(--color-ink);
+    border: 1px solid var(--color-gold-500);
+    background: transparent;
+    overflow: hidden;
+    isolation: isolate;
+    transition: color 0.4s ease;
+    cursor: pointer;
+  }
+  .btn-gold::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--color-gold-500);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .btn-gold:hover::before,
+  .btn-gold:focus-visible::before {
+    transform: scaleX(1);
+  }
+  .btn-gold--solid {
+    color: var(--color-ink);
+    background: var(--color-gold-500);
+    border-color: var(--color-gold-500);
+  }
+  .btn-gold--solid::before {
+    background: var(--color-gold-700);
+  }
+  .btn-gold--solid:hover,
+  .btn-gold--solid:focus-visible {
+    color: var(--color-paper);
+  }
+}
+
+/* ---------- Per-word reveal maska (rezerva na diakritiku) ---------- */
+@layer utilities {
+  .word-mask {
+    display: inline-block;
+    overflow: hidden;
+    padding-top: 0.18em;
+    padding-bottom: 0.18em;
+    margin-top: -0.18em;
+    margin-bottom: -0.18em;
+    vertical-align: top;
+  }
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .marquee {
+    animation: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* ---------- Misc ---------- */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
