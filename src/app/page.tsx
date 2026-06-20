@@ -6,6 +6,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { WordReveal, Eyebrow } from "@/components/ui/WordReveal";
 import { Photo } from "@/components/ui/Photo";
 import { RidgeDivider, MonogramZ } from "@/components/ui/GoldRidge";
+import { ContourField, Aurora, TopoRings, Magnetic } from "@/components/ui/Decor";
 import { CountUp } from "@/components/ui/CountUp";
 import { ApartmentCard } from "@/components/apartments/ApartmentCard";
 import { getApartments } from "@/data/apartments";
@@ -38,8 +39,10 @@ export default function HomePage() {
       <Hero />
 
       {/* Developerský projekt — asymetrický intro */}
-      <section className="py-24 lg:py-32">
-        <Container>
+      <section className="relative overflow-hidden py-24 lg:py-32">
+        <ContourField className="opacity-100" opacity={0.13} drift={8} />
+        <TopoRings className="-left-20 top-8 h-[320px] w-[320px] opacity-40" />
+        <Container className="relative">
           <div className="grid grid-cols-12 gap-10 lg:gap-16">
             <div className="col-span-12 lg:col-span-5">
               <Reveal>
@@ -68,15 +71,20 @@ export default function HomePage() {
             <Photo
               src="/foto/objekt-portret.jpg"
               alt="Bytový dům Zákoutí v krajině Orlických hor."
-              className="aspect-[21/9] w-full"
+              className="aspect-[16/9] w-full"
+              imgClassName="object-[center_38%]"
             />
+            <p className="mono mt-3 text-xs text-stone">
+              Vizualizace bytového domu Zákoutí — Deštné v Orlických horách.
+            </p>
           </Reveal>
         </Container>
       </section>
 
       {/* Prémiová lokalita — text + foto */}
-      <section className="bg-ivory py-24 lg:py-32">
-        <Container>
+      <section className="relative overflow-hidden bg-ivory py-24 lg:py-32">
+        <ContourField className="opacity-100" opacity={0.12} drift={9} flip />
+        <Container className="relative">
           <div className="grid grid-cols-12 items-center gap-10 lg:gap-16">
             <Reveal className="col-span-12 lg:col-span-6">
               <Photo
@@ -109,8 +117,9 @@ export default function HomePage() {
       </section>
 
       {/* Proč Zákoutí — editoriální trio spojené konturou */}
-      <section className="py-24 lg:py-32">
-        <Container>
+      <section className="relative overflow-hidden py-24 lg:py-32">
+        <ContourField className="opacity-100" opacity={0.12} drift={7} />
+        <Container className="relative">
           <Reveal>
             <Eyebrow>Proč Zákoutí?</Eyebrow>
           </Reveal>
@@ -126,10 +135,11 @@ export default function HomePage() {
               <Reveal
                 key={d.title}
                 index={i}
-                className={i === 1 ? "md:mt-10" : i === 2 ? "md:mt-20" : ""}
+                className={`group ${i === 1 ? "md:mt-10" : i === 2 ? "md:mt-20" : ""}`}
               >
-                <span className="flex h-14 w-14 items-center justify-center rounded-full border border-gold-300 bg-gold-100 text-gold-700">
-                  <d.icon size={24} strokeWidth={1.5} />
+                <span className="relative flex h-16 w-16 items-center justify-center rounded-full border border-gold-300 bg-gold-100 text-gold-700">
+                  <span className="absolute inset-[-7px] rounded-full border border-dashed border-gold-300/70 transition-transform duration-700 group-hover:rotate-90" />
+                  <d.icon size={26} strokeWidth={1.5} />
                 </span>
                 <h3 className="mt-6 text-h3 text-ink">{d.title}</h3>
                 <p className="mt-3 text-body-lg text-pretty text-stone">{d.text}</p>
@@ -141,6 +151,7 @@ export default function HomePage() {
 
       {/* Investice — count-up */}
       <section className="relative overflow-hidden bg-ink py-24 text-paper lg:py-32">
+        <Aurora />
         <MonogramZ className="absolute -right-10 -top-16 text-[26rem]" />
         <Container className="relative">
           <Reveal>
@@ -232,8 +243,9 @@ export default function HomePage() {
       </section>
 
       {/* Zima / Léto */}
-      <section className="py-24 lg:py-32">
-        <Container>
+      <section className="relative overflow-hidden py-24 lg:py-32">
+        <ContourField className="opacity-100" opacity={0.12} drift={8} flip />
+        <Container className="relative">
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
             <Reveal className="border border-line bg-pure p-8 lg:p-10">
               <Eyebrow>Zimní sezóna</Eyebrow>
@@ -258,7 +270,7 @@ export default function HomePage() {
       </section>
 
       {/* Sense of place — full-bleed aerial */}
-      <section className="relative h-[70vh] min-h-[460px] w-full overflow-hidden">
+      <section className="relative h-[84vh] min-h-[520px] w-full overflow-hidden">
         <Photo
           src="/foto/okoli-01.jpg"
           alt="Letecký pohled na údolí Deštného — louky, lesy a sjezdovka se hřebeny Orlických hor v dáli."
@@ -285,8 +297,9 @@ export default function HomePage() {
       </section>
 
       {/* Teaser apartmánů */}
-      <section className="py-24 lg:py-32">
-        <Container>
+      <section className="relative overflow-hidden py-24 lg:py-32">
+        <ContourField className="opacity-100" opacity={0.12} drift={7} />
+        <Container className="relative">
           <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
             <div>
               <Reveal>
@@ -318,8 +331,10 @@ export default function HomePage() {
       </section>
 
       {/* Závěrečné CTA */}
-      <section className="bg-ivory py-24 lg:py-32">
-        <Container className="text-center">
+      <section className="relative overflow-hidden bg-ivory py-24 lg:py-32">
+        <ContourField className="opacity-100" opacity={0.16} drift={10} />
+        <MonogramZ className="pointer-events-none absolute -bottom-28 left-1/2 -translate-x-1/2 text-[30rem] leading-none" />
+        <Container className="relative text-center">
           <Reveal>
             <Eyebrow>Kontakt</Eyebrow>
           </Reveal>
@@ -336,12 +351,16 @@ export default function HomePage() {
           </Reveal>
           <Reveal className="mt-10">
             <div className="flex flex-wrap justify-center gap-4">
-              <Link href="/kontakt/" className="btn-gold btn-gold--solid">
-                Kontaktovat
-              </Link>
-              <Link href="/apartmany/" className="btn-gold">
-                Zobrazit apartmány
-              </Link>
+              <Magnetic>
+                <Link href="/kontakt/" className="btn-gold btn-gold--solid">
+                  Kontaktovat
+                </Link>
+              </Magnetic>
+              <Magnetic>
+                <Link href="/apartmany/" className="btn-gold">
+                  Zobrazit apartmány
+                </Link>
+              </Magnetic>
             </div>
           </Reveal>
         </Container>

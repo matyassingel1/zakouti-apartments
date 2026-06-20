@@ -1,15 +1,17 @@
 import Link from "next/link";
 import { NAV, site } from "@/data/site";
+import { Aurora } from "@/components/ui/Decor";
 
 const TICKER = "ZÁKOUTÍ · ORLICKÉ HORY · 2027 · ";
 
 export function Footer() {
   return (
     <footer className="relative overflow-hidden bg-ink text-paper">
+      <Aurora className="opacity-60" />
       <div className="hairline-gold" />
 
       {/* Marquee ticker */}
-      <div className="overflow-hidden border-b border-paper/10 py-5">
+      <div className="relative z-10 overflow-hidden border-b border-paper/10 py-5">
         <div className="marquee">
           {[0, 1].map((k) => (
             <span

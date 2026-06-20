@@ -34,7 +34,11 @@
     -webkit-text-size-adjust: 100%;
   }
   body {
-    background: var(--color-paper);
+    background-color: var(--color-paper);
+    background-image:
+      radial-gradient(120% 80% at 50% -10%, rgba(197, 165, 114, 0.06), transparent 60%),
+      radial-gradient(100% 60% at 100% 100%, rgba(224, 203, 148, 0.05), transparent 55%);
+    background-attachment: fixed;
     color: var(--color-ink);
     font-family: var(--font-body);
     overflow-x: hidden;

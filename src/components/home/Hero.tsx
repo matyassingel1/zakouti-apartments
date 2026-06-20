@@ -2,15 +2,17 @@
 
 import Link from "next/link";
 import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { asset } from "@/lib/asset";
 import { HeroRidge } from "@/components/ui/GoldRidge";
+import { Magnetic } from "@/components/ui/Decor";
 import { Eyebrow } from "@/components/ui/WordReveal";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 export function Hero() {
+  const reduce = useReducedMotion();
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -41,6 +43,18 @@ export function Hero() {
       {/* Scrim: tmavý nahoře (header) + levý dolní roh (text) */}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink/45 via-transparent to-transparent" />
       <div className="media-scrim pointer-events-none absolute inset-0" />
+      {/* Cinematická vinětace */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{ boxShadow: "inset 0 0 220px 60px rgba(28,27,23,0.55)" }}
+      />
+      {/* Pomalé zlaté světlo */}
+      <motion.div
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-[10%] top-[5%] h-[60vh] w-[60vh] rounded-full bg-gold-300/20 blur-[120px]"
+        animate={reduce ? undefined : { opacity: [0.25, 0.5, 0.25], scale: [1, 1.12, 1] }}
+        transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
+      />
 
       {/* Zlatý hřeben — podpis */}
       <HeroRidge />
@@ -101,12 +115,16 @@ export function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: EASE, delay: 0.9 }}
           >
-            <Link href="/apartmany/" className="btn-gold btn-gold--solid">
-              Prohlédnout apartmány
-            </Link>
-            <Link href="/kontakt/" className="btn-gold border-paper/70 text-paper">
-              Domluvit prohlídku
-            </Link>
+            <Magnetic>
+              <Link href="/apartmany/" className="btn-gold btn-gold--solid">
+                Prohlédnout apartmány
+              </Link>
+            </Magnetic>
+            <Magnetic>
+              <Link href="/kontakt/" className="btn-gold border-paper/70 text-paper">
+                Domluvit prohlídku
+              </Link>
+            </Magnetic>
           </motion.div>
         </div>
       </motion.div>
@@ -114,7 +132,7 @@ export function Hero() {
       {/* Scroll cue */}
       <motion.div
         className="absolute bottom-6 left-1/2 z-20 -translate-x-1/2 text-paper/70"
-        animate={{ y: [0, 8, 0] }}
+        animate={reduce ? undefined : { y: [0, 8, 0] }}
         transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
         aria-hidden="true"
       >

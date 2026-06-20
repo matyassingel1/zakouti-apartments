@@ -2,6 +2,8 @@ import { Container } from "./Container";
 import { Reveal } from "./Reveal";
 import { WordReveal, Eyebrow } from "./WordReveal";
 import { Photo } from "./Photo";
+import { ContourField, TopoRings } from "./Decor";
+import { MonogramZ } from "./GoldRidge";
 
 interface PageHeroProps {
   eyebrow: string;
@@ -37,8 +39,11 @@ export function PageHero({ eyebrow, title, emphasize, lead, photo }: PageHeroPro
   }
 
   return (
-    <section className="border-b border-line pb-16 pt-32 lg:pb-20 lg:pt-44">
-      <Container>
+    <section className="relative overflow-hidden border-b border-line pb-16 pt-32 lg:pb-20 lg:pt-44">
+      <ContourField className="top-0 opacity-100" opacity={0.16} drift={6} />
+      <TopoRings className="-right-24 top-10 h-[360px] w-[360px] opacity-50" />
+      <MonogramZ className="pointer-events-none absolute -bottom-24 right-4 text-[20rem] leading-none" />
+      <Container className="relative">
         <Eyebrow>{eyebrow}</Eyebrow>
         <WordReveal
           as="h1"

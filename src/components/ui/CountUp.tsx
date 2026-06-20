@@ -13,7 +13,7 @@ interface CountUpProps {
 /** Count whole numbers from 0 to `to` once in view. Final value is real text. */
 export function CountUp({ to, suffix = "", durationMs = 1300, className }: CountUpProps) {
   const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-15%" });
+  const inView = useInView(ref, { once: true, margin: "0px 0px -8% 0px" });
   const [value, setValue] = useState(0);
   const prefersReduced =
     typeof window !== "undefined" &&
