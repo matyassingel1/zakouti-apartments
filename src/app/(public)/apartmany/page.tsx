@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { PageHero } from "@/components/ui/PageHero";
 import { Container } from "@/components/ui/Container";
 import { ApartmentsBrowser } from "@/components/apartments/ApartmentsBrowser";
-import { getApartments } from "@/data/apartments";
+import { getApartments } from "@/lib/data";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Apartmány — nabídka a dostupnost",
@@ -10,8 +12,8 @@ export const metadata: Metadata = {
     "Šest exkluzivních horských apartmánů 1+kk až 2+kk v projektu Zákoutí Apartments. Tabulka dostupnosti, ceny a parametry.",
 };
 
-export default function ApartmanyPage() {
-  const apartmany = getApartments();
+export default async function ApartmanyPage() {
+  const apartmany = await getApartments();
   return (
     <>
       <PageHero

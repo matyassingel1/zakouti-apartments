@@ -1,9 +1,9 @@
-// Static export on GitHub Pages serves under /zakouti-apartments.
-// next/link and _next assets get basePath automatically, but plain <img> src does NOT.
-// Every image path must go through asset() so it carries the basePath in production.
-export const BASE_PATH = process.env.NODE_ENV === "production" ? "/zakouti-apartments" : "";
+// Na Vercelu běží web v kořeni (basePath ""). Pro statický export pod podcestou
+// lze nastavit NEXT_PUBLIC_BASE_PATH. Absolutní URL (Vercel Blob, http) procházejí beze změny.
+export const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 export function asset(path: string): string {
+  if (/^https?:\/\//.test(path) || path.startsWith("data:")) return path;
   const p = path.startsWith("/") ? path : `/${path}`;
   return `${BASE_PATH}${p}`;
 }

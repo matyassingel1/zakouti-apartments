@@ -6,6 +6,9 @@ import { Reveal } from "@/components/ui/Reveal";
 import { Eyebrow } from "@/components/ui/WordReveal";
 import { InquiryForm } from "@/components/forms/InquiryForm";
 import { site } from "@/data/site";
+import { getSettings } from "@/lib/data";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Kontakt",
@@ -13,7 +16,8 @@ export const metadata: Metadata = {
     "Kontaktujte Mgr. Annu Krčmovou — prodej apartmánů Zákoutí v Deštném v Orlických horách.",
 };
 
-export default function KontaktPage() {
+export default async function KontaktPage() {
+  const settings = await getSettings();
   return (
     <>
       <PageHero
@@ -37,26 +41,26 @@ export default function KontaktPage() {
                   <li className="flex items-start gap-4">
                     <Phone size={20} className="mt-0.5 shrink-0 text-gold-700" strokeWidth={1.5} />
                     <a
-                      href={`tel:${site.makler.telefonHref}`}
+                      href={`tel:${settings.telefon.replace(/\s/g, "")}`}
                       className="link-underline mono text-lg text-ink"
                     >
-                      {site.makler.telefon}
+                      {settings.telefon}
                     </a>
                   </li>
                   <li className="flex items-start gap-4">
                     <Mail size={20} className="mt-0.5 shrink-0 text-gold-700" strokeWidth={1.5} />
                     <div>
                       <a
-                        href={`mailto:${site.makler.email}`}
+                        href={`mailto:${settings.email}`}
                         className="link-underline block text-ink"
                       >
-                        {site.makler.email}
+                        {settings.email}
                       </a>
                       <a
-                        href={`mailto:${site.makler.emailDruhy}`}
+                        href={`mailto:${settings.email_druhy}`}
                         className="link-underline mt-1 block text-sm text-stone"
                       >
-                        {site.makler.emailDruhy}
+                        {settings.email_druhy}
                       </a>
                     </div>
                   </li>

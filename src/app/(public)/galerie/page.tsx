@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { PageHero } from "@/components/ui/PageHero";
 import { Container } from "@/components/ui/Container";
 import { GalleryView } from "@/components/gallery/GalleryView";
+import { getGallery } from "@/lib/data";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Galerie",
@@ -9,7 +12,8 @@ export const metadata: Metadata = {
     "Vizualizace, interiéry a fotografie okolí projektu Zákoutí Apartments v Deštném v Orlických horách.",
 };
 
-export default function GaleriePage() {
+export default async function GaleriePage() {
+  const galerie = await getGallery();
   return (
     <>
       <PageHero
@@ -20,7 +24,7 @@ export default function GaleriePage() {
       />
       <section className="py-16 lg:py-24">
         <Container>
-          <GalleryView />
+          <GalleryView galerie={galerie} />
         </Container>
       </section>
     </>

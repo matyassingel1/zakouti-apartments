@@ -6,6 +6,9 @@ import { Reveal } from "@/components/ui/Reveal";
 import { ContourField } from "@/components/ui/Decor";
 import { MonogramZ } from "@/components/ui/GoldRidge";
 import { standardy } from "@/data/standards";
+import { getSettings } from "@/lib/data";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Standardy provedení",
@@ -13,7 +16,8 @@ export const metadata: Metadata = {
     "Prémiové materiály a moderní technologie apartmánů Zákoutí — kompletní technické provedení.",
 };
 
-export default function StandardyPage() {
+export default async function StandardyPage() {
+  const settings = await getSettings();
   return (
     <>
       <PageHero
@@ -28,10 +32,21 @@ export default function StandardyPage() {
         <MonogramZ className="pointer-events-none absolute -left-16 top-1/3 text-[24rem] leading-none" />
         <Container className="relative">
           <Reveal>
-            <span className="mono inline-flex items-center gap-2 border border-line bg-ivory px-4 py-2.5 text-xs text-stone">
-              <Download size={15} className="text-gold-700" />
-              Kompletní PDF „ZÁKOUTÍ Apartments – Standardy" Vám na vyžádání zašle makléřka.
-            </span>
+            {settings.standardy_pdf ? (
+              <a
+                href={settings.standardy_pdf}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-gold"
+              >
+                <Download size={16} /> Stáhnout standardy (PDF)
+              </a>
+            ) : (
+              <span className="mono inline-flex items-center gap-2 border border-line bg-ivory px-4 py-2.5 text-xs text-stone">
+                <Download size={15} className="text-gold-700" />
+                Kompletní PDF „ZÁKOUTÍ Apartments – Standardy" Vám na vyžádání zašle makléřka.
+              </span>
+            )}
           </Reveal>
 
           <div className="mt-12 grid grid-cols-1 gap-6 lg:grid-cols-2">

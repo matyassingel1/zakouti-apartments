@@ -3,20 +3,20 @@
 import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { asset } from "@/lib/asset";
-import { galerie, type GalerieKategorie } from "@/data/gallery";
+import type { GalerieItem, GalerieKategorie } from "@/data/gallery";
 import { Lightbox, type LightboxItem } from "@/components/ui/Lightbox";
 import { cn } from "@/lib/utils";
 
 type Tab = "Vše" | GalerieKategorie;
 const TABS: Tab[] = ["Vše", "Vizualizace", "Interiér", "Okolí"];
 
-export function GalleryView() {
+export function GalleryView({ galerie }: { galerie: GalerieItem[] }) {
   const [tab, setTab] = useState<Tab>("Vše");
   const [index, setIndex] = useState<number | null>(null);
 
   const items = useMemo(
     () => galerie.filter((g) => tab === "Vše" || g.kategorie === tab),
-    [tab]
+    [tab, galerie]
   );
 
   const lightboxItems: LightboxItem[] = items.map((g) => ({ src: g.src, alt: g.alt }));

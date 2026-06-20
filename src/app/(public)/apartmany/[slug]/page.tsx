@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, Check, FileText, Car, Boxes } from "lucide-react";
-import { getApartments, getApartment } from "@/data/apartments";
+import { getApartments, getApartment } from "@/lib/data";
 import { standardyShrnuti } from "@/data/standards";
 import { site } from "@/data/site";
 import { formatCzk, formatArea } from "@/lib/utils";
@@ -13,11 +13,7 @@ import { StavBadge } from "@/components/ui/StavBadge";
 import { DetailGallery } from "@/components/apartments/DetailGallery";
 import { InquiryForm } from "@/components/forms/InquiryForm";
 
-export const dynamicParams = false;
-
-export function generateStaticParams() {
-  return getApartments().map((a) => ({ slug: a.slug }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
@@ -25,7 +21,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const apt = getApartment(slug);
+  const apt = await getApartment(slug);
   if (!apt) return { title: "Apartmán nenalezen" };
   return {
     title: `Apartmán ${apt.dispozice} · ${apt.plocha_m2} m² (${apt.oznaceni})`,
@@ -39,10 +35,10 @@ export default async function ApartmanDetail({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const apt = getApartment(slug);
+  const apt = await getApartment(slug);
   if (!apt) notFound();
 
-  const all = getApartments();
+  const all = await getApartments();
   const i = all.findIndex((a) => a.slug === apt.slug);
   const prev = i > 0 ? all[i - 1] : all[all.length - 1];
   const next = i < all.length - 1 ? all[i + 1] : all[0];
@@ -179,7 +175,7 @@ export default async function ApartmanDetail({
                     Ozve se Vám {site.makler.jmeno}.
                   </p>
                   <div className="hairline-gold my-6" />
-                  <InquiryForm apartman={apartmanLabel} compact />
+                  <InquiryForm apartman={apartmanLabel} apartmanSlug={apt.slug} compact />
                 </div>
               </div>
             </div>

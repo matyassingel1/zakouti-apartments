@@ -7,22 +7,23 @@ import { site } from "@/data/site";
 interface InquiryFormProps {
   /** Předvyplněný apartmán (read-only), např. „Apartmán 1+kk · 33 m² (A1)". */
   apartman?: string;
+  apartmanSlug?: string;
   compact?: boolean;
 }
 
-type Errors = Partial<Record<"jmeno" | "email" | "telefon" | "gdpr", string>>;
+type Errors = Partial<Record<"jmeno" | "email" | "telefon" | "gdpr" | "form", string>>;
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_RE = /^[+]?[\d\s()-]{9,}$/;
 
-export function InquiryForm({ apartman, compact = false }: InquiryFormProps) {
+export function InquiryForm({ apartman, apartmanSlug, compact = false }: InquiryFormProps) {
   const [errors, setErrors] = useState<Errors>({});
   const [sent, setSent] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const form = e.currentTarget;
-    const data = new FormData(form);
+    const data = new FormData(e.currentTarget);
     const jmeno = String(data.get("jmeno") ?? "").trim();
     const email = String(data.get("email") ?? "").trim();
     const telefon = String(data.get("telefon") ?? "").trim();
@@ -37,21 +38,27 @@ export function InquiryForm({ apartman, compact = false }: InquiryFormProps) {
     setErrors(next);
     if (Object.keys(next).length > 0) return;
 
-    const predmet = apartman ? `Nová poptávka — ${apartman}` : "Nová poptávka z webu Zákoutí";
-    const telo = [
-      apartman ? `Apartmán: ${apartman}` : "Obecná poptávka",
-      `Jméno: ${jmeno}`,
-      `E-mail: ${email}`,
-      `Telefon: ${telefon}`,
-      "",
-      zprava || "(bez zprávy)",
-    ].join("\n");
-
-    // Bez backendu: otevře e-mailového klienta. Lze nahradit POSTem na endpoint (Formspree / vlastní).
-    window.location.href = `mailto:${site.makler.email}?subject=${encodeURIComponent(
-      predmet
-    )}&body=${encodeURIComponent(telo)}`;
-    setSent(true);
+    setSubmitting(true);
+    try {
+      const res = await fetch("/api/inquiry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          jmeno,
+          email,
+          telefon,
+          zprava,
+          apartman_slug: apartmanSlug,
+          apartman_label: apartman,
+        }),
+      });
+      if (!res.ok) throw new Error("send");
+      setSent(true);
+    } catch {
+      setErrors({ form: "Odeslání se nezdařilo. Zkuste to prosím znovu nebo nás kontaktujte přímo." });
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   if (sent) {
@@ -62,8 +69,7 @@ export function InquiryForm({ apartman, compact = false }: InquiryFormProps) {
         </span>
         <h3 className="text-h3">Děkujeme, ozveme se Vám co nejdříve.</h3>
         <p className="text-body-lg text-stone">
-          Vaše poptávka míří na {site.makler.jmeno}. Pokud se e-mailový klient neotevřel,
-          napište prosím přímo na{" "}
+          Vaše poptávka byla odeslána {site.makler.jmeno}. V případě potřeby nás zastihnete také na{" "}
           <a href={`mailto:${site.makler.email}`} className="link-underline text-gold-900">
             {site.makler.email}
           </a>
@@ -152,8 +158,10 @@ export function InquiryForm({ apartman, compact = false }: InquiryFormProps) {
         </span>
       </label>
 
-      <button type="submit" className="btn-gold btn-gold--solid">
-        Odeslat poptávku
+      {errors.form && <p className="text-sm text-gold-900">{errors.form}</p>}
+
+      <button type="submit" disabled={submitting} className="btn-gold btn-gold--solid">
+        {submitting ? "Odesílám…" : "Odeslat poptávku"}
       </button>
     </form>
   );

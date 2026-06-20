@@ -9,8 +9,10 @@ import { RidgeDivider, MonogramZ } from "@/components/ui/GoldRidge";
 import { ContourField, Aurora, TopoRings, Magnetic } from "@/components/ui/Decor";
 import { CountUp } from "@/components/ui/CountUp";
 import { ApartmentCard } from "@/components/apartments/ApartmentCard";
-import { getApartments } from "@/data/apartments";
+import { getApartments } from "@/lib/data";
 import { site } from "@/data/site";
+
+export const dynamic = "force-dynamic";
 
 const DUVODY = [
   {
@@ -30,8 +32,8 @@ const DUVODY = [
   },
 ];
 
-export default function HomePage() {
-  const apartmany = getApartments();
+export default async function HomePage() {
+  const apartmany = await getApartments();
   const teaser = apartmany.slice(0, 3);
 
   return (

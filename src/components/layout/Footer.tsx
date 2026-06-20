@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { NAV, site } from "@/data/site";
 import { Aurora } from "@/components/ui/Decor";
+import { getSettings } from "@/lib/data";
 
 const TICKER = "ZÁKOUTÍ · ORLICKÉ HORY · 2027 · ";
 
-export function Footer() {
+export async function Footer() {
+  const settings = await getSettings();
   return (
     <footer className="relative overflow-hidden bg-ink text-paper">
       <Aurora className="opacity-60" />
@@ -68,16 +70,16 @@ export function Footer() {
             <p className="mt-5 text-sm text-paper/90">{site.makler.jmeno}</p>
             <p className="mt-2 text-sm text-paper/70">{site.makler.kancelar}</p>
             <a
-              href={`tel:${site.makler.telefonHref}`}
+              href={`tel:${settings.telefon.replace(/\s/g, "")}`}
               className="link-underline mono mt-3 block text-sm text-gold-300"
             >
-              {site.makler.telefon}
+              {settings.telefon}
             </a>
             <a
-              href={`mailto:${site.makler.email}`}
+              href={`mailto:${settings.email}`}
               className="link-underline mt-1 block text-sm text-paper/80 hover:text-paper"
             >
-              {site.makler.email}
+              {settings.email}
             </a>
           </div>
 
