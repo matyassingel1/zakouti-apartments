@@ -73,6 +73,7 @@ export default function HomePage() {
               alt="Bytový dům Zákoutí v krajině Orlických hor."
               className="aspect-[16/9] w-full"
               imgClassName="object-[center_38%]"
+              parallax
             />
             <p className="mono mt-3 text-xs text-stone">
               Vizualizace bytového domu Zákoutí — Deštné v Orlických horách.
@@ -91,6 +92,7 @@ export default function HomePage() {
                 src="/foto/okoli-07.jpg"
                 alt="Objekt Zákoutí a jeho okolí v Orlických horách."
                 className="aspect-[4/3] w-full"
+                parallax
               />
             </Reveal>
             <div className="col-span-12 lg:col-span-5 lg:col-start-8">
@@ -276,6 +278,7 @@ export default function HomePage() {
           alt="Letecký pohled na údolí Deštného — louky, lesy a sjezdovka se hřebeny Orlických hor v dáli."
           className="absolute inset-0 h-full w-full"
           reveal={false}
+          parallax
         />
         <div className="media-scrim absolute inset-0" />
         <Container className="relative flex h-full items-end pb-16 lg:pb-20">

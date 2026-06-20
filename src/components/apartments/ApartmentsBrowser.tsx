@@ -160,7 +160,7 @@ export function ApartmentsBrowser({ apartments }: { apartments: Apartman[] }) {
                 Zrušit filtry
               </button>
             )}
-            <div className="hidden items-center border border-line md:flex">
+            <div className="flex items-center border border-line">
               <button
                 onClick={() => setView("tabulka")}
                 aria-label="Zobrazit jako tabulku"
@@ -260,11 +260,61 @@ export function ApartmentsBrowser({ apartments }: { apartments: Apartman[] }) {
             })}
           </div>
 
-          {/* Karty (mobil) */}
-          <div className="grid gap-6 sm:grid-cols-2 md:hidden">
-            {filtered.map((apt) => (
-              <ApartmentCard key={apt.slug} apt={apt} />
-            ))}
+          {/* Tabulka (mobil) — kompaktní, klikací řádky */}
+          <div className="overflow-hidden border border-line bg-pure md:hidden">
+            <div className="grid grid-cols-[1fr_auto] items-center gap-3 border-b-2 border-gold-700 px-4 py-3">
+              <span className="mono text-[0.62rem] uppercase tracking-[0.12em] text-stone">
+                Apartmán
+              </span>
+              <span className="mono text-right text-[0.62rem] uppercase tracking-[0.12em] text-stone">
+                Cena
+              </span>
+            </div>
+            {filtered.map((apt, i) => {
+              const prodano = apt.stav === "Prodáno";
+              return (
+                <motion.div
+                  key={apt.slug}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: i * 0.05, ease: [0.16, 1, 0.3, 1] }}
+                >
+                  <Link
+                    href={`/apartmany/${apt.slug}/`}
+                    className={cn(
+                      "grid grid-cols-[1fr_auto] items-center gap-3 border-b border-line px-4 py-4 transition-colors active:bg-ivory",
+                      "relative before:absolute before:inset-y-0 before:left-0 before:w-[2px] before:bg-gold-500",
+                      prodano && "opacity-60"
+                    )}
+                  >
+                    <span>
+                      <span className="flex items-baseline gap-2">
+                        <span className="font-display text-lg font-medium text-gold-700">
+                          {apt.oznaceni}
+                        </span>
+                        <span className="text-sm text-ink">{apt.dispozice}</span>
+                        <span className="mono text-xs text-stone">{formatArea(apt.plocha_m2)}</span>
+                      </span>
+                      <span className="mt-1.5 flex items-center gap-2">
+                        <StavBadge stav={apt.stav} />
+                        <span className="text-xs text-stone">{apt.podlazi}</span>
+                      </span>
+                    </span>
+                    <span className="flex items-center gap-2">
+                      <span
+                        className={cn(
+                          "mono text-sm",
+                          prodano ? "text-stone line-through" : "text-ink"
+                        )}
+                      >
+                        {formatCzk(apt.cena_kc)}
+                      </span>
+                      <ArrowRight size={16} className="text-gold-700" />
+                    </span>
+                  </Link>
+                </motion.div>
+              );
+            })}
           </div>
         </>
       )}

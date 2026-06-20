@@ -1,6 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { asset } from "@/lib/asset";
 import { cn } from "@/lib/utils";
 
@@ -13,13 +14,15 @@ interface PhotoProps {
   imgClassName?: string;
   /** clip-path reveal on scroll-in */
   reveal?: boolean;
+  /** slow vertical parallax on scroll */
+  parallax?: boolean;
   priority?: boolean;
   sizes?: string;
 }
 
 /**
  * Plain <img> through asset() (GitHub Pages basePath-safe) with an inner
- * scale + clip-path reveal. object-cover by default.
+ * scale + clip-path reveal and optional scroll parallax. object-cover by default.
  */
 export function Photo({
   src,
@@ -27,12 +30,21 @@ export function Photo({
   className,
   imgClassName,
   reveal = true,
+  parallax = false,
   priority = false,
 }: PhotoProps) {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+  const y = useTransform(scrollYProgress, [0, 1], ["-8%", "8%"]);
+
   return (
-    <div className={cn("relative overflow-hidden", className)}>
+    <div ref={ref} className={cn("relative overflow-hidden", className)}>
       <motion.div
-        className="h-full w-full"
+        className={parallax ? "h-[116%] w-full" : "h-full w-full"}
+        style={parallax ? { y } : undefined}
         initial={reveal ? { clipPath: "inset(0 0 18% 0)", scale: 1.08, opacity: 0.4 } : false}
         whileInView={reveal ? { clipPath: "inset(0 0 0% 0)", scale: 1, opacity: 1 } : undefined}
         viewport={{ once: true, margin: "-8%" }}
