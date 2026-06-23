@@ -1,8 +1,9 @@
-// Zrcadlí databázovou entitu `Apartman` (Base44 / budoucí CMS).
-// Web čte výhradně odsud — žádná čísla natvrdo v komponentách.
+// Oficiální nabídka apartmánů — zdroj: „WEBOVINY – přehled apartmánů" (23. 6. 2026).
+// Web čte výhradně odsud. Žádná čísla ani tvrzení natvrdo v komponentách.
+// Popisy jsou generované striktně z oficiálních dat (žádné smyšlené výhledy ani lokality).
 
-export type Dispozice = "1+kk" | "1+1" | "2+kk";
-export type Podlazi = "I. NP" | "II. NP";
+export type Dispozice = "Garsoniéra" | "1+1" | "2+kk" | "2+1" | "Mezonet";
+export type Podlazi = "I. PP" | "I. NP" | "II. NP" | "III. NP";
 export type Stav = "Volný" | "Rezervováno" | "Prodáno";
 
 export interface ApartmanFoto {
@@ -16,144 +17,133 @@ export interface Apartman {
   oznaceni: string;
   dispozice: Dispozice;
   podlazi: Podlazi;
-  plocha_m2: number;
-  balkon_terasa: string;
-  vyhled: string;
+  /** Užitná plocha (m²). */
+  uzitna_m2: number;
+  /** Celková plocha vč. sklepa a venkovních ploch (m²). */
+  celkova_m2: number;
+  /** Balkon / terasa / předzahrádka (m²); 0 = bez venkovní plochy. */
+  venkovni_m2: number;
+  /** Zděný sklep (m²). */
+  sklep_m2: number;
   cena_kc: number;
   stav: Stav;
   popis: string;
-  pudorys: string;
+  /** 3D půdorysy jednotky (2 pohledy); prázdné = připravujeme. */
+  pudorysy: string[];
+  /** Ilustrativní vizualizace — společné pro všechny jednotky. */
   fotky: ApartmanFoto[];
   parkovaci_stani: boolean;
-  sklepni_koje: boolean;
   poradi: number;
 }
 
-const INT_KUCHYNE: ApartmanFoto = {
-  src: "/foto/interiery/kuchyne-studio.webp",
-  alt: "Vizualizace kuchyňského studia 1+kk — dubová linka, černé spotřebiče, jídelní kout a pohovka s výhledem do přírody.",
-  popis: "Kuchyňské studio — ilustrativní vizualizace",
-};
+// Společné ilustrativní vizualizace (dle zadání makléřky jsou pro všechny apartmány stejné).
 const INT_OBYVAK: ApartmanFoto = {
   src: "/foto/interiery/obyvaci-pokoj.webp",
-  alt: "Vizualizace obývacího pokoje s jídelnou — rohová sedačka, kruhové LED svítidlo, kulatý stůl a výhled do hor.",
+  alt: "Ilustrativní vizualizace obývacího pokoje s jídelnou — rohová sedačka, kulatý stůl a výhled do přírody.",
   popis: "Obývací pokoj s jídelnou — ilustrativní vizualizace",
+};
+const INT_KUCHYNE: ApartmanFoto = {
+  src: "/foto/interiery/kuchyne-studio.webp",
+  alt: "Ilustrativní vizualizace kuchyňského koutu — dubová linka, jídelní kout a posezení.",
+  popis: "Kuchyňský kout — ilustrativní vizualizace",
 };
 const INT_LOZNICE: ApartmanFoto = {
   src: "/foto/interiery/loznice.webp",
-  alt: "Vizualizace ložnice — čalouněná postel, zrcadlová šatní skříň, horský obraz a balkon.",
+  alt: "Ilustrativní vizualizace ložnice — čalouněná postel, šatní skříň a horský motiv.",
   popis: "Ložnice — ilustrativní vizualizace",
 };
-const EXTERIER: ApartmanFoto = {
-  src: "/foto/budova.jpg",
-  alt: "Vizualizace bytového domu Zákoutí — bílá fasáda, dřevěné balkony, břidlicová střecha a kamenná podnož.",
-  popis: "Bytový dům Zákoutí — exteriér",
+const VIZUALIZACE = [INT_OBYVAK, INT_KUCHYNE, INT_LOZNICE];
+
+// Půdorysy dodané makléřkou (přes úschovnu) — k dispozici jen pro I. NP a II. NP.
+const SE_PUDORYSEM = new Set([
+  "a11", "b12", "c13", "d14",
+  "a21", "b22", "c23", "d24", "e25", "f26",
+]);
+
+const PODLAZI_FRAZE: Record<Podlazi, string> = {
+  "I. PP": "v prvním podzemním podlaží (suterénu)",
+  "I. NP": "v prvním nadzemním podlaží",
+  "II. NP": "ve druhém nadzemním podlaží",
+  "III. NP": "ve třetím nadzemním podlaží",
 };
 
-export const apartments: Apartman[] = [
-  {
-    slug: "1kk-33",
-    oznaceni: "A1",
-    dispozice: "1+kk",
-    podlazi: "II. NP",
-    plocha_m2: 33,
-    balkon_terasa: "balkón 5 m²",
-    vyhled: "vrcholky Orlického národního parku",
-    cena_kc: 3490000,
-    stav: "Volný",
-    popis: `Exkluzivně Vám nabízíme atraktivní prosvětlený apartmán v II. NP. Dispozice jednotky je 1+kk, o celkové rozloze 33 m². Součástí apartmánu je slunný balkón o výměře 5 m², který nabízí příjemné venkovní posezení s výhledem přímo na vrcholky Orlického národního parku. Samozřejmostí je vlastní parkovací stání, sklepní kóje a podíl na společných prostorách nemovitosti.`,
-    pudorys: "/foto/pudorysy/1kk-33m2.jpg",
-    fotky: [INT_KUCHYNE, EXTERIER],
-    parkovaci_stani: true,
-    sklepni_koje: true,
-    poradi: 1,
-  },
-  {
-    slug: "1kk-35",
-    oznaceni: "A2",
-    dispozice: "1+kk",
-    podlazi: "II. NP",
-    plocha_m2: 35,
-    balkon_terasa: "balkón 5 m²",
-    vyhled: "vrcholky Orlických hor",
-    cena_kc: 3490000,
-    stav: "Volný",
-    popis: `Exkluzivně Vám nabízíme atraktivní apartmán v II. NP rezidenčního projektu Zákoutí Apartments. Dispozice jednotky je 1+kk o celkové rozloze 35 m². Součástí apartmánu je slunný balkón o výměře 5 m², který nabízí příjemné venkovní posezení s výhledem na vrcholky Orlických hor. Samozřejmostí je vlastní parkovací stání, sklepní kóje a podíl na společných prostorách nemovitosti.`,
-    pudorys: "/foto/pudorysy/1kk-35m2.jpg",
-    fotky: [INT_KUCHYNE, EXTERIER],
-    parkovaci_stani: true,
-    sklepni_koje: true,
-    poradi: 2,
-  },
-  {
-    slug: "1kk-49",
-    oznaceni: "A3",
-    dispozice: "1+kk",
-    podlazi: "II. NP",
-    plocha_m2: 49,
-    balkon_terasa: "balkón 5 m²",
-    vyhled: "okolní příroda",
-    cena_kc: 5290000,
-    stav: "Volný",
-    popis: `Exkluzivně Vám nabízíme atraktivní prosvětlený apartmán ve II. NP. Dispozice jednotky je 1+kk, o celkové rozloze 49 m². Součástí apartmánu je slunný balkón o výměře 5 m², který nabízí příjemné venkovní posezení s výhledem přímo do okolní přírody. Samozřejmostí je vlastní parkovací stání, sklepní kóje a podíl na společných prostorách nemovitosti.`,
-    pudorys: "/foto/pudorysy/1kk-49m2.jpg",
-    fotky: [INT_KUCHYNE, EXTERIER],
-    parkovaci_stani: true,
-    sklepni_koje: true,
-    poradi: 3,
-  },
-  {
-    slug: "1kk-48",
-    oznaceni: "A4",
-    dispozice: "1+kk",
-    podlazi: "II. NP",
-    plocha_m2: 48,
-    balkon_terasa: "balkón 5 m²",
-    vyhled: "sjezdovka Marta a vrcholky Orlického národního parku",
-    cena_kc: 4990000,
-    stav: "Volný",
-    popis: `Nabízíme Vám atraktivní prosvětlený apartmán ve II. NP. Dispozice jednotky je 1+kk, o celkové rozloze 48 m². Součástí apartmánu je slunný balkón o výměře 5 m², který nabízí příjemné venkovní posezení s krásnými výhledy přímo na sjezdovku Marta a na vrcholky Orlického národního parku. Samozřejmostí je vlastní parkovací stání, sklepní kóje a podíl na společných prostorách nemovitosti.`,
-    pudorys: "/foto/pudorysy/1kk-48m2.jpg",
-    fotky: [INT_KUCHYNE, EXTERIER],
-    parkovaci_stani: true,
-    sklepni_koje: true,
-    poradi: 4,
-  },
-  {
-    slug: "1-1-57",
-    oznaceni: "A5",
-    dispozice: "1+1",
-    podlazi: "I. NP",
-    plocha_m2: 57,
-    balkon_terasa: "balkón 3 m²",
-    vyhled: "okolní krajina",
-    cena_kc: 4990000,
-    stav: "Volný",
-    popis: `Nabízíme Vám atraktivní apartmán v I. NP. Dispozice jednotky je 1+1, o celkové rozloze 57 m². Součástí apartmánu je slunný balkón o výměře 3 m², který nabízí příjemné výhledy do okolní krajiny. Samozřejmostí je vlastní parkovací stání, sklepní kóje a podíl na společných prostorách nemovitosti.`,
-    pudorys: "/foto/pudorysy/1plus1-57m2.jpg",
-    fotky: [INT_OBYVAK, INT_LOZNICE, EXTERIER],
-    parkovaci_stani: true,
-    sklepni_koje: true,
-    poradi: 5,
-  },
-  {
-    slug: "2kk-84",
-    oznaceni: "A6",
-    dispozice: "2+kk",
-    podlazi: "I. NP",
-    plocha_m2: 84,
-    balkon_terasa: "terasa 30 m²",
-    vyhled: "vrcholky Orlického národního parku",
-    cena_kc: 7490000,
-    stav: "Volný",
-    popis: `Hledáte apartmán s velkorysou terasou? Nabízíme Vám luxusní apartmán v I. NP, jehož součástí je terasa o výměře 30 m², která nabízí rozšíření obytného prostoru a příjemné venkovní posezení s výhledem přímo na vrcholky Orlického národního parku. Dispozice jednotky je 2+kk, o celkové rozloze 84 m². Samozřejmostí je vlastní parkovací stání, sklepní kóje a podíl na společných prostorách nemovitosti.`,
-    pudorys: "/foto/pudorysy/2kk-84m2.jpg",
-    fotky: [INT_OBYVAK, INT_LOZNICE, EXTERIER],
-    parkovaci_stani: true,
-    sklepni_koje: true,
-    poradi: 6,
-  },
+function dispFraze(d: Dispozice): string {
+  if (d === "Garsoniéra") return "garsoniéra";
+  if (d === "Mezonet") return "mezonet (dvoupodlažní uspořádání)";
+  return d;
+}
+
+interface Spec {
+  o: string; // označení
+  d: Dispozice;
+  p: Podlazi;
+  ven: number; // venkovní plocha m²
+  uzit: number; // užitná m²
+  celk: number; // celková m²
+  cena: number;
+}
+
+// Pořadí dle oficiálního přehledu (I. PP → I. NP → II. NP → III. NP).
+const SPECS: Spec[] = [
+  { o: "A01", d: "2+1", p: "I. PP", ven: 50, uzit: 74, celk: 129, cena: 6990000 },
+  { o: "B02", d: "1+1", p: "I. PP", ven: 40, uzit: 46, celk: 91, cena: 4990000 },
+  { o: "C03", d: "2+1", p: "I. PP", ven: 50, uzit: 64, celk: 119, cena: 5990000 },
+  { o: "A11", d: "2+kk", p: "I. NP", ven: 25, uzit: 67, celk: 97, cena: 7990000 },
+  { o: "B12", d: "2+kk", p: "I. NP", ven: 25, uzit: 42, celk: 72, cena: 6990000 },
+  { o: "C13", d: "2+kk", p: "I. NP", ven: 25, uzit: 51, celk: 81, cena: 7490000 },
+  { o: "D14", d: "2+kk", p: "I. NP", ven: 5, uzit: 51, celk: 61, cena: 4990000 },
+  { o: "A21", d: "2+kk", p: "II. NP", ven: 5, uzit: 48, celk: 58, cena: 5250000 },
+  { o: "B22", d: "Garsoniéra", p: "II. NP", ven: 5, uzit: 40, celk: 50, cena: 4990000 },
+  { o: "C23", d: "Garsoniéra", p: "II. NP", ven: 5, uzit: 25, celk: 35, cena: 3490000 },
+  { o: "D24", d: "Garsoniéra", p: "II. NP", ven: 5, uzit: 27, celk: 37, cena: 3990000 },
+  { o: "E25", d: "Garsoniéra", p: "II. NP", ven: 5, uzit: 41, celk: 51, cena: 5250000 },
+  { o: "F26", d: "2+kk", p: "II. NP", ven: 5, uzit: 51, celk: 61, cena: 4990000 },
+  { o: "A31", d: "Mezonet", p: "III. NP", ven: 0, uzit: 87, celk: 92, cena: 8990000 },
+  { o: "B32", d: "Mezonet", p: "III. NP", ven: 0, uzit: 51, celk: 56, cena: 5990000 },
+  { o: "C33", d: "Mezonet", p: "III. NP", ven: 0, uzit: 47, celk: 52, cena: 5290000 },
+  { o: "D34", d: "Mezonet", p: "III. NP", ven: 0, uzit: 48, celk: 53, cena: 5790000 },
+  { o: "E35", d: "Mezonet", p: "III. NP", ven: 0, uzit: 50, celk: 55, cena: 5990000 },
+  { o: "F36", d: "Mezonet", p: "III. NP", ven: 0, uzit: 90, celk: 95, cena: 8990000 },
 ];
+
+function buildPopis(s: Spec): string {
+  const venVeta =
+    s.ven > 0 ? ` K bytu náleží venkovní plocha (balkon / terasa / předzahrádka) o výměře ${s.ven} m².` : "";
+  return (
+    `Apartmán ${s.o} se nachází ${PODLAZI_FRAZE[s.p]} bytového domu Zákoutí ` +
+    `v Deštném v Orlických horách. Dispozice jednotky je ${dispFraze(s.d)}, ` +
+    `užitná plocha ${s.uzit} m², celková plocha včetně sklepa a venkovních ploch ${s.celk} m².` +
+    venVeta +
+    ` Ke každé jednotce náleží zděný sklep o výměře 5 m², vlastní parkovací stání ` +
+    `a podíl na společných prostorách nemovitosti. Uvedená cena je konečná a bez DPH.`
+  );
+}
+
+function buildApartman(s: Spec, i: number): Apartman {
+  const slug = s.o.toLowerCase();
+  const pudorysy = SE_PUDORYSEM.has(slug)
+    ? [`/foto/pudorysy/${slug}-1.jpg`, `/foto/pudorysy/${slug}-2.jpg`]
+    : [];
+  return {
+    slug,
+    oznaceni: s.o,
+    dispozice: s.d,
+    podlazi: s.p,
+    uzitna_m2: s.uzit,
+    celkova_m2: s.celk,
+    venkovni_m2: s.ven,
+    sklep_m2: 5,
+    cena_kc: s.cena,
+    stav: "Volný",
+    popis: buildPopis(s),
+    pudorysy,
+    fotky: VIZUALIZACE,
+    parkovaci_stani: true,
+    poradi: i + 1,
+  };
+}
+
+export const apartments: Apartman[] = SPECS.map(buildApartman);
 
 export function getApartments(): Apartman[] {
   return [...apartments].sort((a, b) => a.poradi - b.poradi);

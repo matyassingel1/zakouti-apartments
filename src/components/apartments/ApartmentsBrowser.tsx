@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, LayoutGrid, Table as TableIcon } from "lucide-react";
 import type { Apartman, Dispozice, Podlazi, Stav } from "@/data/apartments";
-import { formatCzk, formatArea, cn } from "@/lib/utils";
+import { formatCzk, formatArea, formatAreaOrDash, cn } from "@/lib/utils";
 import { StavBadge } from "@/components/ui/StavBadge";
 import { ApartmentCard } from "./ApartmentCard";
 import { CountUp } from "@/components/ui/CountUp";
@@ -16,8 +16,8 @@ type StavFilter = "Vše" | "Volný" | "Rezervováno";
 type Sort = "poradi" | "cena-asc" | "cena-desc" | "plocha-asc" | "plocha-desc";
 type View = "tabulka" | "karty";
 
-const DISP: DispFilter[] = ["Vše", "1+kk", "1+1", "2+kk"];
-const POD: PodFilter[] = ["Vše", "I. NP", "II. NP"];
+const DISP: DispFilter[] = ["Vše", "Garsoniéra", "1+1", "2+kk", "2+1", "Mezonet"];
+const POD: PodFilter[] = ["Vše", "I. PP", "I. NP", "II. NP", "III. NP"];
 const STAV: StavFilter[] = ["Vše", "Volný", "Rezervováno"];
 const SORTS: { key: Sort; label: string }[] = [
   { key: "poradi", label: "Doporučené" },
@@ -96,9 +96,9 @@ export function ApartmentsBrowser({ apartments }: { apartments: Apartman[] }) {
         case "cena-desc":
           return b.cena_kc - a.cena_kc;
         case "plocha-asc":
-          return a.plocha_m2 - b.plocha_m2;
+          return a.uzitna_m2 - b.uzitna_m2;
         case "plocha-desc":
-          return b.plocha_m2 - a.plocha_m2;
+          return b.uzitna_m2 - a.uzitna_m2;
         default:
           return a.poradi - b.poradi;
       }
@@ -214,7 +214,7 @@ export function ApartmentsBrowser({ apartments }: { apartments: Apartman[] }) {
           {/* Tabulka (desktop) */}
           <div className="hidden overflow-hidden border border-line bg-pure md:block">
             <div className="grid grid-cols-[0.7fr_0.9fr_0.8fr_0.7fr_1.1fr_1.1fr_1fr_auto] items-center gap-4 border-b-2 border-gold-700 px-6 py-4">
-              {["Apartmán", "Dispozice", "Podlaží", "Plocha", "Balkón / terasa", "Cena", "Stav", ""].map(
+              {["Apartmán", "Dispozice", "Podlaží", "Užitná", "Venkovní", "Cena bez DPH", "Stav", ""].map(
                 (h, i) => (
                   <span key={i} className="mono text-[0.68rem] uppercase tracking-[0.12em] text-stone">
                     {h}
@@ -242,8 +242,8 @@ export function ApartmentsBrowser({ apartments }: { apartments: Apartman[] }) {
                     <span className="font-display text-xl font-medium text-gold-700">{apt.oznaceni}</span>
                     <span className="text-sm text-ink">{apt.dispozice}</span>
                     <span className="text-sm text-stone">{apt.podlazi}</span>
-                    <span className="mono text-sm text-ink">{formatArea(apt.plocha_m2)}</span>
-                    <span className="text-sm text-stone">{apt.balkon_terasa}</span>
+                    <span className="mono text-sm text-ink">{formatArea(apt.uzitna_m2)}</span>
+                    <span className="mono text-sm text-stone">{formatAreaOrDash(apt.venkovni_m2)}</span>
                     <span className={cn("mono text-sm", prodano ? "text-stone line-through" : "text-ink")}>
                       {formatCzk(apt.cena_kc)}
                     </span>
@@ -293,7 +293,7 @@ export function ApartmentsBrowser({ apartments }: { apartments: Apartman[] }) {
                           {apt.oznaceni}
                         </span>
                         <span className="text-sm text-ink">{apt.dispozice}</span>
-                        <span className="mono text-xs text-stone">{formatArea(apt.plocha_m2)}</span>
+                        <span className="mono text-xs text-stone">{formatArea(apt.uzitna_m2)}</span>
                       </span>
                       <span className="mt-1.5 flex items-center gap-2">
                         <StavBadge stav={apt.stav} />

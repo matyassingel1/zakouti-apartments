@@ -11,6 +11,7 @@ import { CountUp } from "@/components/ui/CountUp";
 import { ApartmentCard } from "@/components/apartments/ApartmentCard";
 import { getApartments } from "@/data/apartments";
 import { site } from "@/data/site";
+import { fixWidows } from "@/lib/utils";
 
 const DUVODY = [
   {
@@ -58,10 +59,12 @@ export default function HomePage() {
             <div className="col-span-12 lg:col-span-6 lg:col-start-7 lg:pt-16">
               <Reveal>
                 <p className="text-lead text-pretty text-stone">
-                  Nabízíme Vám ke koupi nové moderní apartmány v Deštném v Orlických horách —
-                  Zákoutí, jež je perfektním místem pro zimní i letní dovolenou, ale i pro stabilní
-                  pronájem.{" "}
-                  <span className="text-ink">Stavba bude ukončena a k předání již v roce 2027.</span>
+                  {fixWidows(
+                    "Nabízíme Vám ke koupi nové moderní apartmány v Deštném v Orlických horách — Zákoutí, jež je perfektním místem pro zimní i letní dovolenou, ale i pro stabilní pronájem. "
+                  )}
+                  <span className="text-ink">
+                    {fixWidows("Stavba bude ukončena a k předání již v roce 2027.")}
+                  </span>
                 </p>
               </Reveal>
             </div>
@@ -106,11 +109,9 @@ export default function HomePage() {
               />
               <Reveal className="mt-6">
                 <p className="text-body-lg text-pretty text-stone">
-                  Samotná obec Deštné v Orlických horách patří k nejpopulárnějším horským
-                  střediskům České republiky. Výhodně položená v oblasti CHKO Orlické hory zajišťuje
-                  čisté ovzduší, zážitkovou přírodu a vynikající zázemí pro zimu i léto. Náš projekt
-                  v lokalitě Zákoutí nabízí moderní a komfortní apartmány v idylickém prostředí — v
-                  dostupnosti skiareálů a turistických tras, a přitom v klidnější části obce.
+                  {fixWidows(
+                    "Samotná obec Deštné v Orlických horách patří k nejpopulárnějším horským střediskům České republiky. Výhodně položená v oblasti CHKO Orlické hory zajišťuje čisté ovzduší, zážitkovou přírodu a vynikající zázemí pro zimu i léto. Náš projekt v lokalitě Zákoutí nabízí moderní a komfortní apartmány v idylickém prostředí — v dostupnosti skiareálů a turistických tras, a přitom v klidnější části obce."
+                  )}
                 </p>
               </Reveal>
             </div>
@@ -144,7 +145,7 @@ export default function HomePage() {
                   <d.icon size={26} strokeWidth={1.5} />
                 </span>
                 <h3 className="mt-6 text-h3 text-ink">{d.title}</h3>
-                <p className="mt-3 text-body-lg text-pretty text-stone">{d.text}</p>
+                <p className="mt-3 text-body-lg text-pretty text-stone">{fixWidows(d.text)}</p>
               </Reveal>
             ))}
           </div>
@@ -169,7 +170,7 @@ export default function HomePage() {
             {[
               { value: <><CountUp to={15} />&nbsp;%</>, label: "potenciální roční výnos" },
               { value: "2027", label: "dokončení a předání" },
-              { value: <CountUp to={6} />, label: "exkluzivních apartmánů" },
+              { value: <CountUp to={19} />, label: "exkluzivních apartmánů" },
               { value: "1,5–2 km", label: "ke skiareálu Deštné–Šerlich" },
             ].map((s, i) => (
               <Reveal key={i} index={i}>
@@ -183,8 +184,9 @@ export default function HomePage() {
           </div>
           <Reveal className="mt-14">
             <p className="max-w-2xl text-body-lg text-paper/80">
-              Apartmány budou zkolaudovány jako bytové jednotky, což umožňuje bezproblémové
-              financování prostřednictvím hypotečního úvěru.
+              {fixWidows(
+                "Apartmány budou zkolaudovány jako bytové jednotky, což umožňuje bezproblémové financování prostřednictvím hypotečního úvěru."
+              )}
             </p>
           </Reveal>
         </Container>
@@ -202,7 +204,7 @@ export default function HomePage() {
             </div>
             <Reveal className="col-span-12 lg:col-span-4 lg:col-start-9">
               <p className="text-body-lg text-pretty text-stone">
-                Teplé dřevo, přírodní materiály a klid hor v každém detailu.
+                {fixWidows("Teplé dřevo, přírodní materiály a klid hor v každém detailu.")}
               </p>
               <Link
                 href="/galerie/"
@@ -235,7 +237,7 @@ export default function HomePage() {
               <Reveal index={2}>
                 <Photo
                   src="/foto/interiery/kuchyne-studio.webp"
-                  alt="Kuchyňské studio 1+kk — dubová linka a jídelní kout."
+                  alt="Kuchyňský kout — dubová linka a jídelní kout."
                   className="aspect-[4/3] w-full"
                 />
               </Reveal>
@@ -253,18 +255,18 @@ export default function HomePage() {
               <Eyebrow>Zimní sezóna</Eyebrow>
               <h3 className="mt-4 text-h2 text-ink">Skiareál na dosah</h3>
               <p className="mt-4 text-body-lg text-pretty text-stone">
-                Skiareál Deštné – Šerlich leží v těsné blízkosti (cca 1,5–2 km). Apartmány navržené
-                pro aktivní sportovce i rodinnou zimní dovolenou — výhledy na zasněžené hory,
-                prostorné zázemí a možnost zabezpečeného uložení lyžařského vybavení.
+                {fixWidows(
+                  "Skiareál Deštné – Šerlich leží v těsné blízkosti (cca 1,5–2 km). Apartmány navržené pro aktivní sportovce i rodinnou zimní dovolenou — výhledy na zasněžené hory, prostorné zázemí a možnost zabezpečeného uložení lyžařského vybavení."
+                )}
               </p>
             </Reveal>
             <Reveal index={1} className="border border-line bg-pure p-8 lg:mt-12 lg:p-10">
               <Eyebrow>Letní sezóna</Eyebrow>
               <h3 className="mt-4 text-h2 text-ink">Příroda pro aktivní rodinu</h3>
               <p className="mt-4 text-body-lg text-pretty text-stone">
-                V létě je Deštné oblíbené pro turistiku, cyklistiku a zdravý způsob života v
-                přírodě — naučné stezky, výhledy na vrcholy a relax na čerstvém horském ovzduší. V
-                blízkosti Bikepark Deštné a Adventure park.
+                {fixWidows(
+                  "V létě je Deštné oblíbené pro turistiku, cyklistiku a zdravý způsob života v přírodě — naučné stezky, výhledy na vrcholy a relax na čerstvém horském ovzduší. V blízkosti Bikepark Deštné a Adventure park."
+                )}
               </p>
             </Reveal>
           </div>
@@ -291,8 +293,9 @@ export default function HomePage() {
             />
             <Reveal className="mt-5">
               <p className="text-lead text-paper/90">
-                Hřebeny Orlických hor, čistý vzduch a výhledy, které si vychutnáte z vlastního
-                balkonu — každý den v roce.
+                {fixWidows(
+                  "Hřebeny Orlických hor, čistý vzduch a výhledy, které si vychutnáte z vlastního balkonu — každý den v roce."
+                )}
               </p>
             </Reveal>
           </div>
@@ -306,7 +309,7 @@ export default function HomePage() {
           <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
             <div>
               <Reveal>
-                <Eyebrow>Nabídka · 6 apartmánů</Eyebrow>
+                <Eyebrow>Nabídka · 19 apartmánů</Eyebrow>
               </Reveal>
               <WordReveal
                 as="h2"

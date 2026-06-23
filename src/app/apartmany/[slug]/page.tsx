@@ -5,7 +5,7 @@ import { ArrowLeft, ArrowRight, Check, FileText, Car, Boxes } from "lucide-react
 import { getApartments, getApartment } from "@/data/apartments";
 import { standardyShrnuti } from "@/data/standards";
 import { site } from "@/data/site";
-import { formatCzk, formatArea } from "@/lib/utils";
+import { formatCzk, formatArea, formatAreaOrDash, fixWidows } from "@/lib/utils";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 import { Eyebrow } from "@/components/ui/WordReveal";
@@ -28,7 +28,7 @@ export async function generateMetadata({
   const apt = getApartment(slug);
   if (!apt) return { title: "Apartmán nenalezen" };
   return {
-    title: `Apartmán ${apt.dispozice} · ${apt.plocha_m2} m² (${apt.oznaceni})`,
+    title: `Apartmán ${apt.dispozice} · ${apt.uzitna_m2} m² (${apt.oznaceni})`,
     description: apt.popis.slice(0, 155),
   };
 }
@@ -48,16 +48,17 @@ export default async function ApartmanDetail({
   const next = i < all.length - 1 ? all[i + 1] : all[0];
   const prodano = apt.stav === "Prodáno";
 
-  const apartmanLabel = `Apartmán ${apt.dispozice} · ${formatArea(apt.plocha_m2)} (${apt.oznaceni})`;
+  const apartmanLabel = `Apartmán ${apt.dispozice} · ${formatArea(apt.uzitna_m2)} (${apt.oznaceni})`;
 
   const parametry: { k: string; v: string }[] = [
+    { k: "Označení jednotky", v: apt.oznaceni },
     { k: "Dispozice", v: apt.dispozice },
     { k: "Podlaží", v: apt.podlazi },
-    { k: "Užitná plocha", v: formatArea(apt.plocha_m2) },
-    { k: "Balkón / terasa", v: apt.balkon_terasa },
-    { k: "Výhled", v: apt.vyhled },
+    { k: "Užitná plocha", v: formatArea(apt.uzitna_m2) },
+    { k: "Celková plocha (vč. sklepa a venk. ploch)", v: formatArea(apt.celkova_m2) },
+    { k: "Balkon / terasa / předzahrádka", v: formatAreaOrDash(apt.venkovni_m2) },
+    { k: "Zděný sklep", v: formatArea(apt.sklep_m2) },
     { k: "Parkovací stání", v: apt.parkovaci_stani ? "ano, 1×" : "—" },
-    { k: "Sklepní kóje", v: apt.sklepni_koje ? "ano" : "—" },
     { k: "Podíl na společných prostorách", v: "ano" },
   ];
 
@@ -78,7 +79,7 @@ export default async function ApartmanDetail({
               <Eyebrow>Zákoutí Apartments · Deštné v Orlických horách</Eyebrow>
               <div className="mt-4 flex flex-wrap items-baseline gap-4">
                 <h1 className="text-display-2 text-ink">Apartmán {apt.dispozice}</h1>
-                <span className="mono text-xl text-stone">{formatArea(apt.plocha_m2)}</span>
+                <span className="mono text-xl text-stone">{formatArea(apt.uzitna_m2)}</span>
                 <span className="font-display text-2xl text-gold-700">{apt.oznaceni}</span>
               </div>
               <div className="mt-5">
@@ -86,13 +87,17 @@ export default async function ApartmanDetail({
               </div>
             </div>
 
-            <div className="flex flex-col items-start gap-4 lg:items-end">
+            <div className="flex flex-col items-start gap-3 lg:items-end">
               <p
                 className={`font-display text-4xl lg:text-5xl ${prodano ? "text-stone line-through" : "text-ink"}`}
               >
                 {formatCzk(apt.cena_kc)}
               </p>
-              <a href="#poptavka" className="btn-gold btn-gold--solid">
+              <p className="mono max-w-xs text-xs leading-relaxed text-stone lg:text-right">
+                Cena je konečná a&nbsp;bez&nbsp;DPH · v&nbsp;ceně parkovací stání (1×)
+                a&nbsp;zděný sklep (5&nbsp;m²)
+              </p>
+              <a href="#poptavka" className="btn-gold btn-gold--solid mt-1">
                 Mám zájem o tento apartmán
               </a>
             </div>
@@ -111,7 +116,7 @@ export default async function ApartmanDetail({
 
               <Reveal className="mt-14">
                 <Eyebrow>O apartmánu</Eyebrow>
-                <p className="mt-5 text-lead text-pretty text-stone">{apt.popis}</p>
+                <p className="mt-5 text-lead text-pretty text-stone">{fixWidows(apt.popis)}</p>
               </Reveal>
 
               {/* Parametry */}
@@ -145,7 +150,7 @@ export default async function ApartmanDetail({
                   {standardyShrnuti.map((s) => (
                     <li key={s} className="flex items-start gap-3 text-body-lg text-stone">
                       <Check size={18} className="mt-1 shrink-0 text-gold-700" strokeWidth={2} />
-                      <span>{s}</span>
+                      <span>{fixWidows(s)}</span>
                     </li>
                   ))}
                 </ul>
@@ -165,7 +170,7 @@ export default async function ApartmanDetail({
                   <Car size={18} className="text-gold-700" /> Vlastní parkovací stání
                 </span>
                 <span className="flex items-center gap-2.5 text-sm text-stone">
-                  <Boxes size={18} className="text-gold-700" /> Sklepní kóje
+                  <Boxes size={18} className="text-gold-700" /> Zděný sklep 5&nbsp;m²
                 </span>
               </div>
             </div>
@@ -198,7 +203,7 @@ export default async function ApartmanDetail({
                   Předchozí
                 </span>
                 <span className="font-display text-lg text-ink">
-                  Apartmán {prev.dispozice} · {formatArea(prev.plocha_m2)}
+                  Apartmán {prev.dispozice} · {formatArea(prev.uzitna_m2)}
                 </span>
               </span>
             </Link>
@@ -209,7 +214,7 @@ export default async function ApartmanDetail({
               <span>
                 <span className="mono block text-xs uppercase tracking-[0.12em] text-stone">Další</span>
                 <span className="font-display text-lg text-ink">
-                  Apartmán {next.dispozice} · {formatArea(next.plocha_m2)}
+                  Apartmán {next.dispozice} · {formatArea(next.uzitna_m2)}
                 </span>
               </span>
               <ArrowRight size={20} className="text-gold-700 transition-transform group-hover:translate-x-1" />

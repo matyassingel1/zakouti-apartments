@@ -32,16 +32,24 @@ export function ApartmentCard({ apt }: { apt: Apartman }) {
       <div className="flex flex-1 flex-col p-6">
         <div className="flex items-baseline justify-between gap-3">
           <h3 className="font-display text-2xl font-medium text-ink">Apartmán {apt.dispozice}</h3>
-          <span className="mono text-sm text-stone">{formatArea(apt.plocha_m2)}</span>
+          <span className="mono text-sm text-stone">{formatArea(apt.uzitna_m2)}</span>
         </div>
         <p className="mt-2 text-sm leading-relaxed text-stone">
-          {apt.podlazi} · {apt.balkon_terasa}
+          {apt.podlazi}
+          {apt.venkovni_m2 > 0 && <> · venkovní plocha {formatArea(apt.venkovni_m2)}</>}
         </p>
-        <p className="mt-1 text-sm leading-relaxed text-stone">Výhled: {apt.vyhled}</p>
+        <p className="mt-1 text-sm leading-relaxed text-stone">
+          Zděný sklep 5&nbsp;m² · vlastní parkovací stání
+        </p>
 
         <div className="mt-5 flex items-end justify-between border-t border-line pt-4">
-          <span className={`mono text-lg ${prodano ? "text-stone line-through" : "text-ink"}`}>
-            {formatCzk(apt.cena_kc)}
+          <span className="flex flex-col">
+            <span className={`mono text-lg ${prodano ? "text-stone line-through" : "text-ink"}`}>
+              {formatCzk(apt.cena_kc)}
+            </span>
+            <span className="mono text-[0.65rem] uppercase tracking-[0.1em] text-stone">
+              konečná, bez DPH
+            </span>
           </span>
           <span className="flex items-center gap-1.5 text-sm text-gold-900 transition-colors">
             Detail

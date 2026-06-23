@@ -5,6 +5,7 @@ import { useRef } from "react";
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { asset } from "@/lib/asset";
+import { fixWidows } from "@/lib/utils";
 import { HeroRidge } from "@/components/ui/GoldRidge";
 import { Magnetic } from "@/components/ui/Decor";
 import { Eyebrow } from "@/components/ui/WordReveal";
@@ -105,8 +106,9 @@ export function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: EASE, delay: 0.75 }}
           >
-            Nové moderní apartmány v Deštném v Orlických horách — ideální pro zimu, léto
-            i dlouhodobý investiční záměr.
+            {fixWidows(
+              "Nové moderní apartmány v Deštném v Orlických horách — ideální pro zimu, léto i dlouhodobý investiční záměr."
+            )}
           </motion.p>
 
           <motion.div

@@ -6,6 +6,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { ContourField } from "@/components/ui/Decor";
 import { MonogramZ } from "@/components/ui/GoldRidge";
 import { standardy } from "@/data/standards";
+import { fixWidows } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Standardy provedení",
@@ -30,7 +31,7 @@ export default function StandardyPage() {
           <Reveal>
             <span className="mono inline-flex items-center gap-2 border border-line bg-ivory px-4 py-2.5 text-xs text-stone">
               <Download size={15} className="text-gold-700" />
-              Kompletní PDF „ZÁKOUTÍ Apartments – Standardy" Vám na vyžádání zašle makléřka.
+              {fixWidows('Kompletní PDF „ZÁKOUTÍ Apartments – Standardy" Vám na vyžádání zašle makléřka.')}
             </span>
           </Reveal>
 
@@ -55,7 +56,7 @@ export default function StandardyPage() {
                   {kat.polozky.map((p) => (
                     <li key={p} className="flex items-start gap-3 text-body-lg text-pretty text-stone">
                       <Check size={17} className="mt-1 shrink-0 text-gold-700" strokeWidth={2} />
-                      <span>{p}</span>
+                      <span>{fixWidows(p)}</span>
                     </li>
                   ))}
                 </ul>
@@ -65,9 +66,10 @@ export default function StandardyPage() {
 
           <Reveal className="mt-12 border-l-2 border-gold-500 bg-ivory p-6 lg:p-8">
             <p className="text-body-lg text-stone">
-              <span className="font-medium text-ink">Poznámka:</span> Změny vyhrazeny. Budoucí
-              kupující má právo zvolit si jiné než standardní vybavení apartmánu (po dohodě a za
-              stanovených podmínek).
+              <span className="font-medium text-ink">Poznámka:</span>{" "}
+              {fixWidows(
+                "Změny vyhrazeny. Budoucí kupující má právo zvolit si jiné než standardní vybavení apartmánu (po dohodě a za stanovených podmínek)."
+              )}
             </p>
           </Reveal>
         </Container>
