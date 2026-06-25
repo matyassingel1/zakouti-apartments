@@ -37,7 +37,7 @@ export default async function AdminApartmany() {
                 <td className="px-4 py-3 font-display text-lg text-gold-700">{a.oznaceni}</td>
                 <td className="px-4 py-3 text-sm text-ink">{a.dispozice}</td>
                 <td className="px-4 py-3 text-sm text-stone">{a.podlazi}</td>
-                <td className="mono px-4 py-3 text-sm text-ink">{formatArea(a.plocha_m2)}</td>
+                <td className="mono px-4 py-3 text-sm text-ink">{formatArea(a.uzitna_m2)}</td>
                 <td className="mono px-4 py-3 text-sm text-ink">{formatCzk(a.cena_kc)}</td>
                 <td className="px-4 py-3"><StavBadge stav={a.stav} /></td>
                 <td className="mono px-4 py-3 text-sm text-stone">{a.poradi}</td>

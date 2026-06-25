@@ -4,11 +4,13 @@ import { jwtVerify } from "jose";
 const SESSION_COOKIE = "zak_admin";
 
 function secret(): Uint8Array {
-  return new TextEncoder().encode(
-    process.env.AUTH_SECRET ||
-      process.env.ADMIN_PASSWORD ||
-      "dev-insecure-secret-change-me"
-  );
+  const s = process.env.AUTH_SECRET;
+  if (s) return new TextEncoder().encode(s);
+  // V produkci nefallbackovat (fail-closed) — bez AUTH_SECRET je admin nepřístupný, ne zranitelný.
+  if (process.env.NODE_ENV === "production" || process.env.VERCEL) {
+    throw new Error("Chybí AUTH_SECRET.");
+  }
+  return new TextEncoder().encode("dev-insecure-secret-change-me");
 }
 
 export async function middleware(req: NextRequest) {

@@ -21,7 +21,18 @@ export function formatArea(value: number): string {
   return `${value}${NBSP}m²`;
 }
 
-/** Keep one-letter Czech prepositions/conjunctions glued to the next word. */
+/** 25 -> "25 m²", 0 -> "—". */
+export function formatAreaOrDash(value: number): string {
+  return value > 0 ? formatArea(value) : "—";
+}
+
+/**
+ * České sirotky/vdovy: jednohláskové předložky a spojky (k s v z o u a i) ani
+ * spaced pomlčky nemají zůstat na konci řádku — řeší se nezalomitelnou mezerou.
+ * Lookbehind opraví i dvě předložky za sebou (např. „a v lese").
+ */
 export function fixWidows(text: string): string {
-  return text.replace(/(\s|^)([ksvzouaiKSVZOUAI])\s/g, `$1$2${NBSP}`);
+  return text
+    .replace(/(?<=^|[\s(„"–—/])([KkSsVvZzOoUuAaIi])[ \t]+/g, `$1${NBSP}`)
+    .replace(/ ([–—]) /g, `${NBSP}$1 `);
 }

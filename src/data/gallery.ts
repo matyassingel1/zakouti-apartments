@@ -34,7 +34,7 @@ export const galerie: GalerieItem[] = [
   },
   {
     src: "/foto/interiery/kuchyne-studio.webp",
-    alt: "Kuchyňské studio 1+kk — dubová linka, černé spotřebiče a jídelní kout.",
+    alt: "Kuchyňský kout — dubová linka, černé spotřebiče a jídelní kout.",
     kategorie: "Interiér",
   },
   {

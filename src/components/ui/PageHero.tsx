@@ -4,6 +4,7 @@ import { WordReveal, Eyebrow } from "./WordReveal";
 import { Photo } from "./Photo";
 import { ContourField, TopoRings } from "./Decor";
 import { MonogramZ } from "./GoldRidge";
+import { fixWidows } from "@/lib/utils";
 
 interface PageHeroProps {
   eyebrow: string;
@@ -30,7 +31,7 @@ export function PageHero({ eyebrow, title, emphasize, lead, photo }: PageHeroPro
           />
           {lead && (
             <Reveal className="mt-6">
-              <p className="max-w-2xl text-lead text-paper/90">{lead}</p>
+              <p className="max-w-2xl text-lead text-paper/90">{fixWidows(lead)}</p>
             </Reveal>
           )}
         </Container>
@@ -53,7 +54,7 @@ export function PageHero({ eyebrow, title, emphasize, lead, photo }: PageHeroPro
         />
         {lead && (
           <Reveal className="mt-7">
-            <p className="max-w-2xl text-lead text-pretty text-stone">{lead}</p>
+            <p className="max-w-2xl text-lead text-pretty text-stone">{fixWidows(lead)}</p>
           </Reveal>
         )}
       </Container>

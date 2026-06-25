@@ -14,12 +14,15 @@ import { Eyebrow } from "@/components/ui/WordReveal";
 import { Photo } from "@/components/ui/Photo";
 import { RouteRidge } from "@/components/ui/GoldRidge";
 import { site } from "@/data/site";
+import { fixWidows } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Lokalita — Deštné v Orlických horách",
   description:
     "Turistické trasy, gastronomie, sport a dostupnost lokality Zákoutí v Deštném v Orlických horách.",
 };
+
+export const dynamic = "force-dynamic";
 
 const SEKCE = [
   {
@@ -90,7 +93,7 @@ export default function LokalitaPage() {
                     <h2 className="mt-2 text-h2 text-ink">{s.nadpis}</h2>
                   </div>
                   <div className="col-span-12 lg:col-span-6 lg:col-start-7 lg:pt-2">
-                    <p className="text-body-lg text-pretty text-stone">{s.text}</p>
+                    <p className="text-body-lg text-pretty text-stone">{fixWidows(s.text)}</p>
                     {s.foto && (
                       <Photo
                         src={s.foto.src}

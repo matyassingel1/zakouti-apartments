@@ -15,26 +15,17 @@ Co admin umí:
 
 ---
 
-## 1. Databáze — Turso (libSQL, zdarma)
-
-1. Vytvořte si účet na <https://turso.tech> a nainstalujte CLI (`brew install tursodatabase/tap/turso`)
-   nebo použijte webové rozhraní.
-2. Vytvořte databázi a token:
-   ```bash
-   turso db create zakouti
-   turso db show zakouti --url           # → TURSO_DATABASE_URL  (libsql://...)
-   turso db tokens create zakouti        # → TURSO_AUTH_TOKEN
-   ```
-   Tabulky se vytvoří a naplní seed daty **automaticky** při prvním načtení webu.
-
-> Alternativa: jakákoli libSQL-kompatibilní DB. Bez nastavené `TURSO_DATABASE_URL` web jede
-> lokálně proti souboru `data/local.db` (jen pro vývoj).
-
-## 2. Import projektu na Vercel
+## 1. Import projektu na Vercel
 
 1. <https://vercel.com/new> → importujte repozitář `matyassingel1/zakouti-apartments`.
 2. **Production Branch:** nastavte na `vercel-admin` (Settings → Git).
 3. Framework: Next.js (detekuje se sám). Žádné další nastavení buildu není třeba.
+
+## 2. Databáze — Vercel Postgres (Neon), vše uvnitř Vercelu
+
+Ve Vercel projektu → **Storage → Create Database → Postgres (Neon)** → potvrdit.
+Tím se do projektu **automaticky přidá `DATABASE_URL`** (žádný samostatný účet ani CLI).
+Tabulky se vytvoří a naplní 19 apartmány **automaticky** při prvním načtení webu.
 
 ## 3. Úložiště obrázků — Vercel Blob
 
@@ -46,9 +37,8 @@ Ve Vercel projektu → **Storage → Create → Blob**. Tím se automaticky při
 | Proměnná | Popis |
 |----------|-------|
 | `ADMIN_PASSWORD` | **heslo do administrace** (zvolte silné) |
-| `AUTH_SECRET` | náhodný dlouhý řetězec pro podpis přihlášení (`openssl rand -base64 32`) |
-| `TURSO_DATABASE_URL` | z kroku 1 |
-| `TURSO_AUTH_TOKEN` | z kroku 1 |
+| `AUTH_SECRET` | **povinné** — náhodný dlouhý řetězec pro podpis přihlášení (`openssl rand -base64 32`). Bez něj je admin v produkci nepřístupný (fail-closed). |
+| `DATABASE_URL` | přidá se sám v kroku 2 (Postgres/Neon) |
 | `BLOB_READ_WRITE_TOKEN` | přidá se sám v kroku 3 |
 | `RESEND_API_KEY` | *(volitelné)* odesílání e-mailu o nové poptávce přes [Resend](https://resend.com) |
 | `RESEND_FROM` | *(volitelné)* odesílatel, např. `Zákoutí <noreply@vasedomena.cz>` |
@@ -72,9 +62,9 @@ Vercel → Settings → Domains → přidejte doménu a nastavte DNS dle pokynů
 
 ```bash
 npm install
-cp .env.example .env.local   # vyplňte ADMIN_PASSWORD + AUTH_SECRET
+cp .env.example .env.local   # vyplňte ADMIN_PASSWORD, AUTH_SECRET a DATABASE_URL (z Neonu)
 npm run dev                  # web na http://localhost:3000, admin na /admin
 ```
 
-Lokálně se použije souborová DB `data/local.db` a obrázky se ukládají do `public/uploads/`
-(obojí je v `.gitignore`).
+Lokálně se připojuje ke stejné Postgres DB přes `DATABASE_URL`; obrázky se bez Blob tokenu
+ukládají do `public/uploads/` (v `.gitignore`).

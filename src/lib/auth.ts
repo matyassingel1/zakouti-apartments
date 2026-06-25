@@ -5,11 +5,15 @@ import { cookies } from "next/headers";
 export const SESSION_COOKIE = "zak_admin";
 
 function secret(): Uint8Array {
-  const s =
-    process.env.AUTH_SECRET ||
-    process.env.ADMIN_PASSWORD ||
-    "dev-insecure-secret-change-me";
-  return new TextEncoder().encode(s);
+  const s = process.env.AUTH_SECRET;
+  if (s) return new TextEncoder().encode(s);
+  // V produkci NIKDY nefallbackovat — jinak by šel podpis session zfalšovat.
+  if (process.env.NODE_ENV === "production" || process.env.VERCEL) {
+    throw new Error(
+      "Chybí AUTH_SECRET. Nastavte ho v proměnných prostředí (Vercel → Settings → Environment Variables)."
+    );
+  }
+  return new TextEncoder().encode("dev-insecure-secret-change-me");
 }
 
 export async function createSession(): Promise<void> {

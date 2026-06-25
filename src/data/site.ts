@@ -6,7 +6,7 @@ export const site = {
   lokalita: "Deštné v Orlických horách",
   adresaProjektu: "Lokalita Zákoutí, č. p. 32, Deštné v Orlických horách",
   dokonceni: "2027",
-  pocetApartmanu: 6,
+  pocetApartmanu: 19,
 
   makler: {
     jmeno: "Mgr. Anna Krčmová",

@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     template: "%s — Zákoutí Apartments",
   },
   description:
-    "Nové moderní apartmány v Deštném v Orlických horách, lokalita Zákoutí. Šest exkluzivních jednotek s dokončením v roce 2027 — ideální pro zimu, léto i investici.",
+    "Nové moderní apartmány v Deštném v Orlických horách, lokalita Zákoutí. Devatenáct exkluzivních jednotek s dokončením v roce 2027 — ideální pro zimu, léto i investici.",
   keywords: [
     "apartmány Deštné v Orlických horách",
     "Zákoutí Apartments",
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Zákoutí Apartments — moderní bydlení v srdci Orlických hor",
     description:
-      "Šest exkluzivních horských apartmánů v Deštném v Orlických horách. Dokončení 2027.",
+      "Devatenáct exkluzivních horských apartmánů v Deštném v Orlických horách. Dokončení 2027.",
     locale: "cs_CZ",
     type: "website",
   },

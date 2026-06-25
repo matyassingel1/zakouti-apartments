@@ -1,33 +1,36 @@
 import "server-only";
-import type { Row } from "@libsql/client";
-import { db } from "./db";
+import { getDb } from "./db";
 import { ensureReady } from "./schema";
 import type { Apartman, ApartmanFoto, Stav } from "@/data/apartments";
 import type { GalerieItem, GalerieKategorie } from "@/data/gallery";
 import { site } from "@/data/site";
 
-function mapApartman(r: Row): Apartman {
-  let fotky: ApartmanFoto[] = [];
+type Row = Record<string, unknown>;
+
+function parseJson<T>(v: unknown, fallback: T): T {
   try {
-    fotky = JSON.parse(String(r.fotky ?? "[]"));
+    return JSON.parse(String(v ?? "")) as T;
   } catch {
-    fotky = [];
+    return fallback;
   }
+}
+
+function mapApartman(r: Row): Apartman {
   return {
     slug: String(r.slug),
     oznaceni: String(r.oznaceni),
     dispozice: r.dispozice as Apartman["dispozice"],
     podlazi: r.podlazi as Apartman["podlazi"],
-    plocha_m2: Number(r.plocha_m2),
-    balkon_terasa: String(r.balkon_terasa),
-    vyhled: String(r.vyhled),
+    uzitna_m2: Number(r.uzitna_m2),
+    celkova_m2: Number(r.celkova_m2),
+    venkovni_m2: Number(r.venkovni_m2),
+    sklep_m2: Number(r.sklep_m2),
     cena_kc: Number(r.cena_kc),
     stav: r.stav as Stav,
     popis: String(r.popis),
-    pudorys: String(r.pudorys),
-    fotky,
-    parkovaci_stani: Number(r.parkovaci_stani) === 1,
-    sklepni_koje: Number(r.sklepni_koje) === 1,
+    pudorysy: parseJson<string[]>(r.pudorysy, []),
+    fotky: parseJson<ApartmanFoto[]>(r.fotky, []),
+    parkovaci_stani: Boolean(r.parkovaci_stani),
     poradi: Number(r.poradi),
   };
 }
@@ -36,17 +39,14 @@ function mapApartman(r: Row): Apartman {
 
 export async function getApartments(): Promise<Apartman[]> {
   await ensureReady();
-  const res = await db().execute("SELECT * FROM apartman ORDER BY poradi ASC");
-  return res.rows.map(mapApartman);
+  const rows = await getDb()`SELECT * FROM apartman ORDER BY poradi ASC`;
+  return rows.map(mapApartman);
 }
 
 export async function getApartment(slug: string): Promise<Apartman | null> {
   await ensureReady();
-  const res = await db().execute({
-    sql: "SELECT * FROM apartman WHERE slug = ? LIMIT 1",
-    args: [slug],
-  });
-  return res.rows[0] ? mapApartman(res.rows[0]) : null;
+  const rows = await getDb()`SELECT * FROM apartman WHERE slug = ${slug} LIMIT 1`;
+  return rows[0] ? mapApartman(rows[0]) : null;
 }
 
 export interface Settings {
@@ -58,8 +58,8 @@ export interface Settings {
 
 export async function getSettings(): Promise<Settings> {
   await ensureReady();
-  const res = await db().execute("SELECT * FROM nastaveni WHERE id = 1");
-  const r = res.rows[0];
+  const rows = await getDb()`SELECT * FROM nastaveni WHERE id = 1`;
+  const r = rows[0];
   if (!r) {
     return {
       telefon: site.makler.telefon,
@@ -78,12 +78,12 @@ export async function getSettings(): Promise<Settings> {
 
 export async function getGallery(): Promise<GalerieItem[]> {
   await ensureReady();
-  const res = await db().execute("SELECT * FROM media ORDER BY poradi ASC, id ASC");
-  return res.rows.map((r) => ({
+  const rows = await getDb()`SELECT * FROM media ORDER BY poradi ASC, id ASC`;
+  return rows.map((r) => ({
     src: String(r.src),
     alt: String(r.alt),
     kategorie: r.kategorie as GalerieKategorie,
-    sirsi: Number(r.sirsi) === 1,
+    sirsi: Boolean(r.sirsi),
   }));
 }
 
@@ -93,54 +93,43 @@ export interface ApartmanRecord extends Apartman {
   id: number;
 }
 
+export type ApartmanInput = Apartman;
+
 export async function listApartments(): Promise<ApartmanRecord[]> {
   await ensureReady();
-  const res = await db().execute("SELECT * FROM apartman ORDER BY poradi ASC");
-  return res.rows.map((r) => ({ id: Number(r.id), ...mapApartman(r) }));
+  const rows = await getDb()`SELECT * FROM apartman ORDER BY poradi ASC`;
+  return rows.map((r) => ({ id: Number(r.id), ...mapApartman(r) }));
 }
 
 export async function getApartmentById(id: number): Promise<ApartmanRecord | null> {
   await ensureReady();
-  const res = await db().execute({ sql: "SELECT * FROM apartman WHERE id = ?", args: [id] });
-  return res.rows[0] ? { id: Number(res.rows[0].id), ...mapApartman(res.rows[0]) } : null;
-}
-
-export interface ApartmanInput extends Omit<Apartman, "fotky"> {
-  fotky: ApartmanFoto[];
+  const rows = await getDb()`SELECT * FROM apartman WHERE id = ${id}`;
+  return rows[0] ? { id: Number(rows[0].id), ...mapApartman(rows[0]) } : null;
 }
 
 export async function createApartman(a: ApartmanInput): Promise<void> {
   await ensureReady();
-  await db().execute({
-    sql: `INSERT INTO apartman
-      (slug, oznaceni, dispozice, podlazi, plocha_m2, balkon_terasa, vyhled, cena_kc, stav, popis, pudorys, fotky, parkovaci_stani, sklepni_koje, poradi)
-      VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
-    args: [
-      a.slug, a.oznaceni, a.dispozice, a.podlazi, a.plocha_m2, a.balkon_terasa, a.vyhled,
-      a.cena_kc, a.stav, a.popis, a.pudorys, JSON.stringify(a.fotky),
-      a.parkovaci_stani ? 1 : 0, a.sklepni_koje ? 1 : 0, a.poradi,
-    ],
-  });
+  await getDb()`INSERT INTO apartman
+    (slug, oznaceni, dispozice, podlazi, uzitna_m2, celkova_m2, venkovni_m2, sklep_m2, cena_kc, stav, popis, pudorysy, fotky, parkovaci_stani, poradi)
+    VALUES (${a.slug}, ${a.oznaceni}, ${a.dispozice}, ${a.podlazi}, ${a.uzitna_m2}, ${a.celkova_m2},
+      ${a.venkovni_m2}, ${a.sklep_m2}, ${a.cena_kc}, ${a.stav}, ${a.popis},
+      ${JSON.stringify(a.pudorysy)}, ${JSON.stringify(a.fotky)}, ${a.parkovaci_stani}, ${a.poradi})`;
 }
 
 export async function updateApartman(id: number, a: ApartmanInput): Promise<void> {
   await ensureReady();
-  await db().execute({
-    sql: `UPDATE apartman SET
-      slug=?, oznaceni=?, dispozice=?, podlazi=?, plocha_m2=?, balkon_terasa=?, vyhled=?,
-      cena_kc=?, stav=?, popis=?, pudorys=?, fotky=?, parkovaci_stani=?, sklepni_koje=?, poradi=?
-      WHERE id=?`,
-    args: [
-      a.slug, a.oznaceni, a.dispozice, a.podlazi, a.plocha_m2, a.balkon_terasa, a.vyhled,
-      a.cena_kc, a.stav, a.popis, a.pudorys, JSON.stringify(a.fotky),
-      a.parkovaci_stani ? 1 : 0, a.sklepni_koje ? 1 : 0, a.poradi, id,
-    ],
-  });
+  await getDb()`UPDATE apartman SET
+    slug=${a.slug}, oznaceni=${a.oznaceni}, dispozice=${a.dispozice}, podlazi=${a.podlazi},
+    uzitna_m2=${a.uzitna_m2}, celkova_m2=${a.celkova_m2}, venkovni_m2=${a.venkovni_m2}, sklep_m2=${a.sklep_m2},
+    cena_kc=${a.cena_kc}, stav=${a.stav}, popis=${a.popis},
+    pudorysy=${JSON.stringify(a.pudorysy)}, fotky=${JSON.stringify(a.fotky)},
+    parkovaci_stani=${a.parkovaci_stani}, poradi=${a.poradi}
+    WHERE id=${id}`;
 }
 
 export async function deleteApartman(id: number): Promise<void> {
   await ensureReady();
-  await db().execute({ sql: "DELETE FROM apartman WHERE id = ?", args: [id] });
+  await getDb()`DELETE FROM apartman WHERE id = ${id}`;
 }
 
 /* ---------------- Admin: poptávky ---------------- */
@@ -166,20 +155,15 @@ export async function createInquiry(d: {
   apartman_label?: string;
 }): Promise<void> {
   await ensureReady();
-  await db().execute({
-    sql: `INSERT INTO poptavka (jmeno, email, telefon, zprava, apartman_slug, apartman_label, gdpr, datum, stav)
-          VALUES (?,?,?,?,?,?,1,?, 'Nová')`,
-    args: [
-      d.jmeno, d.email, d.telefon, d.zprava ?? null,
-      d.apartman_slug ?? null, d.apartman_label ?? null, new Date().toISOString(),
-    ],
-  });
+  await getDb()`INSERT INTO poptavka (jmeno, email, telefon, zprava, apartman_slug, apartman_label, gdpr, datum, stav)
+    VALUES (${d.jmeno}, ${d.email}, ${d.telefon}, ${d.zprava ?? null},
+      ${d.apartman_slug ?? null}, ${d.apartman_label ?? null}, TRUE, ${new Date().toISOString()}, 'Nová')`;
 }
 
 export async function listInquiries(): Promise<PoptavkaRecord[]> {
   await ensureReady();
-  const res = await db().execute("SELECT * FROM poptavka ORDER BY datum DESC");
-  return res.rows.map((r) => ({
+  const rows = await getDb()`SELECT * FROM poptavka ORDER BY datum DESC`;
+  return rows.map((r) => ({
     id: Number(r.id),
     jmeno: String(r.jmeno),
     email: String(r.email),
@@ -194,12 +178,12 @@ export async function listInquiries(): Promise<PoptavkaRecord[]> {
 
 export async function setInquiryStav(id: number, stav: "Nová" | "Vyřízená"): Promise<void> {
   await ensureReady();
-  await db().execute({ sql: "UPDATE poptavka SET stav = ? WHERE id = ?", args: [stav, id] });
+  await getDb()`UPDATE poptavka SET stav = ${stav} WHERE id = ${id}`;
 }
 
 export async function deleteInquiry(id: number): Promise<void> {
   await ensureReady();
-  await db().execute({ sql: "DELETE FROM poptavka WHERE id = ?", args: [id] });
+  await getDb()`DELETE FROM poptavka WHERE id = ${id}`;
 }
 
 /* ---------------- Admin: galerie ---------------- */
@@ -215,13 +199,13 @@ export interface MediaRecord {
 
 export async function listMedia(): Promise<MediaRecord[]> {
   await ensureReady();
-  const res = await db().execute("SELECT * FROM media ORDER BY poradi ASC, id ASC");
-  return res.rows.map((r) => ({
+  const rows = await getDb()`SELECT * FROM media ORDER BY poradi ASC, id ASC`;
+  return rows.map((r) => ({
     id: Number(r.id),
     src: String(r.src),
     alt: String(r.alt),
     kategorie: r.kategorie as GalerieKategorie,
-    sirsi: Number(r.sirsi) === 1,
+    sirsi: Boolean(r.sirsi),
     poradi: Number(r.poradi),
   }));
 }
@@ -234,15 +218,13 @@ export async function createMedia(d: {
   poradi: number;
 }): Promise<void> {
   await ensureReady();
-  await db().execute({
-    sql: "INSERT INTO media (src, alt, kategorie, sirsi, poradi) VALUES (?,?,?,?,?)",
-    args: [d.src, d.alt, d.kategorie, d.sirsi ? 1 : 0, d.poradi],
-  });
+  await getDb()`INSERT INTO media (src, alt, kategorie, sirsi, poradi)
+    VALUES (${d.src}, ${d.alt}, ${d.kategorie}, ${d.sirsi}, ${d.poradi})`;
 }
 
 export async function deleteMedia(id: number): Promise<void> {
   await ensureReady();
-  await db().execute({ sql: "DELETE FROM media WHERE id = ?", args: [id] });
+  await getDb()`DELETE FROM media WHERE id = ${id}`;
 }
 
 /* ---------------- Admin: nastavení ---------------- */
@@ -255,15 +237,9 @@ export async function updateSettings(d: {
 }): Promise<void> {
   await ensureReady();
   if (d.standardy_pdf === undefined) {
-    await db().execute({
-      sql: "UPDATE nastaveni SET telefon=?, email=?, email_druhy=? WHERE id=1",
-      args: [d.telefon, d.email, d.email_druhy],
-    });
+    await getDb()`UPDATE nastaveni SET telefon=${d.telefon}, email=${d.email}, email_druhy=${d.email_druhy} WHERE id=1`;
   } else {
-    await db().execute({
-      sql: "UPDATE nastaveni SET telefon=?, email=?, email_druhy=?, standardy_pdf=? WHERE id=1",
-      args: [d.telefon, d.email, d.email_druhy, d.standardy_pdf],
-    });
+    await getDb()`UPDATE nastaveni SET telefon=${d.telefon}, email=${d.email}, email_druhy=${d.email_druhy}, standardy_pdf=${d.standardy_pdf} WHERE id=1`;
   }
 }
 
@@ -271,15 +247,15 @@ export async function updateSettings(d: {
 
 export async function dashboardStats() {
   await ensureReady();
-  const c = db();
+  const sql = getDb();
   const [apt, volne, nove] = await Promise.all([
-    c.execute("SELECT COUNT(*) AS n FROM apartman"),
-    c.execute("SELECT COUNT(*) AS n FROM apartman WHERE stav = 'Volný'"),
-    c.execute("SELECT COUNT(*) AS n FROM poptavka WHERE stav = 'Nová'"),
+    sql`SELECT COUNT(*)::int AS n FROM apartman`,
+    sql`SELECT COUNT(*)::int AS n FROM apartman WHERE stav = 'Volný'`,
+    sql`SELECT COUNT(*)::int AS n FROM poptavka WHERE stav = 'Nová'`,
   ]);
   return {
-    apartmany: Number(apt.rows[0].n),
-    volne: Number(volne.rows[0].n),
-    novePoptavky: Number(nove.rows[0].n),
+    apartmany: Number(apt[0].n),
+    volne: Number(volne[0].n),
+    novePoptavky: Number(nove[0].n),
   };
 }

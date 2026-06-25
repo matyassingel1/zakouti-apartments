@@ -14,6 +14,13 @@ export async function saveUpload(file: File, prefix = "soubor"): Promise<string>
     return blob.url;
   }
 
+  // Na Vercelu je souborový systém read-only → bez Blob tokenu fail-fast se srozumitelnou hláškou.
+  if (process.env.VERCEL) {
+    throw new Error(
+      "Chybí BLOB_READ_WRITE_TOKEN — přidejte úložiště Vercel Blob (Storage → Create → Blob)."
+    );
+  }
+
   // Lokální vývoj — zapiš do public/uploads
   const dir = path.join(process.cwd(), "public", "uploads");
   await mkdir(dir, { recursive: true });

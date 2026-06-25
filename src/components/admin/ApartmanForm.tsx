@@ -7,8 +7,8 @@ import type { ApartmanRecord, ApartmanInput } from "@/lib/data";
 import type { ApartmanFoto, Dispozice, Podlazi, Stav } from "@/data/apartments";
 import { saveApartmanAction } from "@/app/admin/actions";
 
-const DISPOZICE: Dispozice[] = ["1+kk", "1+1", "2+kk"];
-const PODLAZI: Podlazi[] = ["I. NP", "II. NP"];
+const DISPOZICE: Dispozice[] = ["Garsoniéra", "1+1", "2+kk", "2+1", "Mezonet"];
+const PODLAZI: Podlazi[] = ["I. PP", "I. NP", "II. NP", "III. NP"];
 const STAVY: Stav[] = ["Volný", "Rezervováno", "Prodáno"];
 
 async function uploadFile(file: File, prefix: string): Promise<string> {
@@ -34,30 +34,31 @@ export function ApartmanForm({ apartman }: { apartman?: ApartmanRecord }) {
   const [f, setF] = useState({
     oznaceni: apartman?.oznaceni ?? "",
     slug: apartman?.slug ?? "",
-    dispozice: apartman?.dispozice ?? ("1+kk" as Dispozice),
-    podlazi: apartman?.podlazi ?? ("II. NP" as Podlazi),
-    plocha_m2: apartman?.plocha_m2 ?? 0,
-    balkon_terasa: apartman?.balkon_terasa ?? "",
-    vyhled: apartman?.vyhled ?? "",
+    dispozice: apartman?.dispozice ?? ("2+kk" as Dispozice),
+    podlazi: apartman?.podlazi ?? ("I. NP" as Podlazi),
+    uzitna_m2: apartman?.uzitna_m2 ?? 0,
+    celkova_m2: apartman?.celkova_m2 ?? 0,
+    venkovni_m2: apartman?.venkovni_m2 ?? 0,
+    sklep_m2: apartman?.sklep_m2 ?? 5,
     cena_kc: apartman?.cena_kc ?? 0,
     stav: apartman?.stav ?? ("Volný" as Stav),
     poradi: apartman?.poradi ?? 0,
     parkovaci_stani: apartman?.parkovaci_stani ?? true,
-    sklepni_koje: apartman?.sklepni_koje ?? true,
     popis: apartman?.popis ?? "",
-    pudorys: apartman?.pudorys ?? "",
   });
+  const [pudorysy, setPudorysy] = useState<string[]>(apartman?.pudorysy ?? []);
   const [fotky, setFotky] = useState<ApartmanFoto[]>(apartman?.fotky ?? []);
 
   function set<K extends keyof typeof f>(key: K, value: (typeof f)[K]) {
     setF((prev) => ({ ...prev, [key]: value }));
   }
 
-  async function onPudorys(file: File) {
+  async function onAddPudorys(file: File) {
     setUploading(true);
     setError(null);
     try {
-      set("pudorys", await uploadFile(file, "pudorys"));
+      const url = await uploadFile(file, "pudorys");
+      setPudorysy((prev) => [...prev, url]);
     } catch {
       setError("Nahrání půdorysu selhalo.");
     } finally {
@@ -81,8 +82,8 @@ export function ApartmanForm({ apartman }: { apartman?: ApartmanRecord }) {
   function submit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
-    if (!f.oznaceni.trim() || !f.slug.trim() || !f.popis.trim() || !f.pudorys) {
-      setError("Vyplňte označení, slug, popis a nahrajte půdorys.");
+    if (!f.oznaceni.trim() || !f.slug.trim() || !f.popis.trim()) {
+      setError("Vyplňte označení, slug a popis.");
       return;
     }
     const payload: ApartmanInput = {
@@ -90,16 +91,16 @@ export function ApartmanForm({ apartman }: { apartman?: ApartmanRecord }) {
       oznaceni: f.oznaceni.trim(),
       dispozice: f.dispozice,
       podlazi: f.podlazi,
-      plocha_m2: Number(f.plocha_m2),
-      balkon_terasa: f.balkon_terasa,
-      vyhled: f.vyhled,
+      uzitna_m2: Number(f.uzitna_m2),
+      celkova_m2: Number(f.celkova_m2),
+      venkovni_m2: Number(f.venkovni_m2),
+      sklep_m2: Number(f.sklep_m2),
       cena_kc: Number(f.cena_kc),
       stav: f.stav,
       popis: f.popis,
-      pudorys: f.pudorys,
+      pudorysy,
       fotky,
       parkovaci_stani: f.parkovaci_stani,
-      sklepni_koje: f.sklepni_koje,
       poradi: Number(f.poradi),
     };
     startTransition(async () => {
@@ -120,11 +121,11 @@ export function ApartmanForm({ apartman }: { apartman?: ApartmanRecord }) {
       <div className="grid gap-5 sm:grid-cols-2">
         <div>
           <label className={labelCls}>Označení *</label>
-          <input className={input} value={f.oznaceni} onChange={(e) => set("oznaceni", e.target.value)} placeholder="A1" />
+          <input className={input} value={f.oznaceni} onChange={(e) => set("oznaceni", e.target.value)} placeholder="A11" />
         </div>
         <div>
           <label className={labelCls}>Slug (URL) *</label>
-          <input className={input} value={f.slug} onChange={(e) => set("slug", e.target.value)} placeholder="1kk-33" />
+          <input className={input} value={f.slug} onChange={(e) => set("slug", e.target.value)} placeholder="a11" />
         </div>
         <div>
           <label className={labelCls}>Dispozice *</label>
@@ -139,20 +140,24 @@ export function ApartmanForm({ apartman }: { apartman?: ApartmanRecord }) {
           </select>
         </div>
         <div>
-          <label className={labelCls}>Plocha (m²) *</label>
-          <input type="number" className={input} value={f.plocha_m2} onChange={(e) => set("plocha_m2", Number(e.target.value))} />
+          <label className={labelCls}>Užitná plocha (m²) *</label>
+          <input type="number" className={input} value={f.uzitna_m2} onChange={(e) => set("uzitna_m2", Number(e.target.value))} />
         </div>
         <div>
-          <label className={labelCls}>Cena (Kč) *</label>
+          <label className={labelCls}>Celková plocha (m²) *</label>
+          <input type="number" className={input} value={f.celkova_m2} onChange={(e) => set("celkova_m2", Number(e.target.value))} />
+        </div>
+        <div>
+          <label className={labelCls}>Balkon / terasa / předzahrádka (m²)</label>
+          <input type="number" className={input} value={f.venkovni_m2} onChange={(e) => set("venkovni_m2", Number(e.target.value))} />
+        </div>
+        <div>
+          <label className={labelCls}>Zděný sklep (m²)</label>
+          <input type="number" className={input} value={f.sklep_m2} onChange={(e) => set("sklep_m2", Number(e.target.value))} />
+        </div>
+        <div>
+          <label className={labelCls}>Cena bez DPH (Kč) *</label>
           <input type="number" className={input} value={f.cena_kc} onChange={(e) => set("cena_kc", Number(e.target.value))} />
-        </div>
-        <div>
-          <label className={labelCls}>Balkón / terasa</label>
-          <input className={input} value={f.balkon_terasa} onChange={(e) => set("balkon_terasa", e.target.value)} placeholder="balkón 5 m²" />
-        </div>
-        <div>
-          <label className={labelCls}>Výhled</label>
-          <input className={input} value={f.vyhled} onChange={(e) => set("vyhled", e.target.value)} />
         </div>
         <div>
           <label className={labelCls}>Stav *</label>
@@ -169,11 +174,7 @@ export function ApartmanForm({ apartman }: { apartman?: ApartmanRecord }) {
       <div className="flex gap-8">
         <label className="flex items-center gap-2.5 text-sm text-ink">
           <input type="checkbox" className="h-4 w-4 accent-[var(--color-gold-700)]" checked={f.parkovaci_stani} onChange={(e) => set("parkovaci_stani", e.target.checked)} />
-          Parkovací stání
-        </label>
-        <label className="flex items-center gap-2.5 text-sm text-ink">
-          <input type="checkbox" className="h-4 w-4 accent-[var(--color-gold-700)]" checked={f.sklepni_koje} onChange={(e) => set("sklepni_koje", e.target.checked)} />
-          Sklepní kóje
+          Parkovací stání (1×)
         </label>
       </div>
 
@@ -182,22 +183,30 @@ export function ApartmanForm({ apartman }: { apartman?: ApartmanRecord }) {
         <textarea className={input} rows={5} value={f.popis} onChange={(e) => set("popis", e.target.value)} />
       </div>
 
-      {/* Půdorys */}
+      {/* Půdorysy (3D) — více pohledů */}
       <div>
-        <label className={labelCls}>Půdorys *</label>
-        <div className="flex items-start gap-4">
-          {f.pudorys && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={f.pudorys} alt="Náhled půdorysu" className="h-28 w-28 border border-line object-contain" />
-          )}
-          <label className="inline-flex cursor-pointer items-center gap-2 border border-line bg-paper px-4 py-2.5 text-sm text-ink hover:border-gold-300">
-            <Upload size={15} /> {f.pudorys ? "Změnit" : "Nahrát"}
-            <input type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && onPudorys(e.target.files[0])} />
+        <label className={labelCls}>Půdorysy (3D) — nepovinné</label>
+        <div className="space-y-3">
+          <div className="flex flex-wrap gap-3">
+            {pudorysy.map((src, i) => (
+              <div key={i} className="relative">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={src} alt={`Půdorys ${i + 1}`} className="h-28 w-28 border border-line object-contain bg-pure" />
+                <button type="button" onClick={() => setPudorysy((p) => p.filter((_, j) => j !== i))}
+                  className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full border border-line bg-paper text-stone hover:text-[#a33]" aria-label="Odebrat půdorys">
+                  <X size={14} />
+                </button>
+              </div>
+            ))}
+          </div>
+          <label className="inline-flex cursor-pointer items-center gap-2 border border-dashed border-line bg-paper px-4 py-2.5 text-sm text-stone hover:border-gold-300 hover:text-ink">
+            <Plus size={15} /> Přidat půdorys
+            <input type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && onAddPudorys(e.target.files[0])} />
           </label>
         </div>
       </div>
 
-      {/* Fotky */}
+      {/* Fotky / vizualizace */}
       <div>
         <label className={labelCls}>Fotografie / vizualizace</label>
         <div className="space-y-3">
