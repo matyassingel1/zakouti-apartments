@@ -13,7 +13,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Kontakt",
   description:
-    "Kontaktujte Mgr. Annu Krčmovou — prodej apartmánů Zákoutí v Deštném v Orlických horách.",
+    "Kontaktujte nás — prodej apartmánů Zákoutí v Deštném v Orlických horách.",
 };
 
 export default async function KontaktPage() {
@@ -34,7 +34,7 @@ export default async function KontaktPage() {
             <div className="col-span-12 lg:col-span-5">
               <Reveal>
                 <Eyebrow>Prodej a zprostředkování</Eyebrow>
-                <p className="mt-5 font-display text-3xl text-ink">{site.makler.jmeno}</p>
+                <p className="mt-5 font-display text-3xl text-ink">Prodej apartmánů Zákoutí</p>
                 <div className="hairline-gold my-7 max-w-xs opacity-70" />
 
                 <ul className="space-y-5">
@@ -85,7 +85,7 @@ export default async function KontaktPage() {
               <Reveal className="border border-line bg-pure p-7 lg:p-9">
                 <h2 className="text-h3 text-ink">Napište nám</h2>
                 <p className="mt-2 text-sm text-stone">
-                  Vyplňte formulář a {site.makler.jmeno} se Vám co nejdříve ozve.
+                  Vyplňte formulář a ozveme se Vám co nejdříve.
                 </p>
                 <div className="hairline-gold my-6" />
                 <InquiryForm />

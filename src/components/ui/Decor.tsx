@@ -12,31 +12,10 @@ import {
 import { cn } from "@/lib/utils";
 
 /* ------------------------------------------------------------------ *
- * Topografické vrstevnice — podpisový motiv (hory = contour lines).
- * Vrstvy zlatých „hřebenů" se jemně posouvají při scrollu (parallax).
+ * Měkký teplý „nádech" v pozadí — místo topografických čar (přání klientky).
+ * Dvě sotva patrné zlaté/krémové gradientní záře, jemný parallax při scrollu.
+ * Props (opacity/drift/flip) zůstávají — beze změny volání napříč webem.
  * ------------------------------------------------------------------ */
-
-const VW = 1440;
-const VH = 600;
-
-function buildRidge(baseY: number, amp: number, phase: number, freq: number): string {
-  const step = 48;
-  let d = "";
-  for (let x = 0; x <= VW; x += step) {
-    const t = x / VW;
-    const y =
-      baseY +
-      Math.sin(t * Math.PI * freq + phase) * amp +
-      Math.cos(t * Math.PI * freq * 1.8 + phase * 1.4) * amp * 0.4;
-    d += x === 0 ? `M${x},${y.toFixed(1)}` : ` L${x},${y.toFixed(1)}`;
-  }
-  return d;
-}
-
-// Hustá sada vrstevnic přes celou výšku — topografická textura.
-const RIDGES = Array.from({ length: 16 }, (_, i) =>
-  buildRidge(20 + i * 38, 20 + (i % 4) * 4, i * 0.55, 2.4 + (i % 3) * 0.8)
-);
 
 interface ContourFieldProps {
   className?: string;
@@ -58,6 +37,8 @@ export function ContourField({
     offset: ["start end", "end start"],
   });
   const y = useTransform(scrollYProgress, [0, 1], [`${drift}%`, `-${drift}%`]);
+  // Přemapuj jemné opacity z čar (0.12–0.16) na čitelnou, ale stále decentní záři.
+  const intensity = Math.min(0.6, opacity * 4);
 
   return (
     <div
@@ -65,49 +46,33 @@ export function ContourField({
       aria-hidden="true"
       className={cn("pointer-events-none absolute inset-0 overflow-hidden", className)}
     >
-      <motion.svg
-        viewBox={`0 0 ${VW} ${VH}`}
-        fill="none"
-        preserveAspectRatio="none"
-        className="h-[120%] w-full"
-        style={{ y, opacity, transform: flip ? "scaleX(-1)" : undefined }}
+      <motion.div
+        className="absolute inset-0"
+        style={{ y, opacity: intensity, transform: flip ? "scaleX(-1)" : undefined }}
       >
-        {RIDGES.map((d, i) => (
-          <path
-            key={i}
-            d={d}
-            stroke="var(--color-gold-500)"
-            strokeWidth={1.1}
-            strokeLinecap="round"
-            vectorEffect="non-scaling-stroke"
-          />
-        ))}
-      </motion.svg>
+        <div
+          className="absolute -left-[14%] top-[-25%] h-[75vh] w-[75vh] rounded-full blur-[120px]"
+          style={{ background: "radial-gradient(circle at center, var(--color-gold-300), transparent 68%)" }}
+        />
+        <div
+          className="absolute -right-[16%] bottom-[-28%] h-[68vh] w-[68vh] rounded-full blur-[130px]"
+          style={{ background: "radial-gradient(circle at center, var(--color-gold-100), transparent 70%)" }}
+        />
+      </motion.div>
     </div>
   );
 }
 
 /* ------------------------------------------------------------------ *
- * Topografické soustředné prstence (jako vrchol na mapě) — roh sekce.
+ * Měkká zlatá záře v rohu sekce (dříve soustředné prstence) — bez čar.
  * ------------------------------------------------------------------ */
 export function TopoRings({ className }: { className?: string }) {
   return (
-    <div aria-hidden="true" className={cn("pointer-events-none absolute", className)}>
-      <svg viewBox="0 0 400 400" fill="none" className="h-full w-full">
-        {Array.from({ length: 8 }, (_, i) => (
-          <ellipse
-            key={i}
-            cx={200 + i * 4}
-            cy={200 - i * 3}
-            rx={40 + i * 22}
-            ry={32 + i * 18}
-            stroke="var(--color-gold-500)"
-            strokeWidth={1}
-            opacity={0.5 - i * 0.05}
-          />
-        ))}
-      </svg>
-    </div>
+    <div
+      aria-hidden="true"
+      className={cn("pointer-events-none absolute rounded-full blur-[80px]", className)}
+      style={{ background: "radial-gradient(circle at center, var(--color-gold-300), transparent 72%)" }}
+    />
   );
 }
 

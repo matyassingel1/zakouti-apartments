@@ -69,7 +69,7 @@ export function InquiryForm({ apartman, apartmanSlug, compact = false }: Inquiry
         </span>
         <h3 className="text-h3">Děkujeme, ozveme se Vám co nejdříve.</h3>
         <p className="text-body-lg text-stone">
-          Vaše poptávka byla odeslána {site.makler.jmeno}. V případě potřeby nás zastihnete také na{" "}
+          Vaše poptávka byla odeslána. V případě potřeby nás zastihnete také na{" "}
           <a href={`mailto:${site.makler.email}`} className="link-underline text-gold-900">
             {site.makler.email}
           </a>

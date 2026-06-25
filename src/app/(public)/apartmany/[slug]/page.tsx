@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, Check, FileText, Car, Boxes } from "lucide-react";
 import { getApartments, getApartment } from "@/lib/data";
 import { standardyShrnuti } from "@/data/standards";
-import { site } from "@/data/site";
 import { formatCzk, formatArea, formatAreaOrDash, fixWidows } from "@/lib/utils";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
@@ -177,7 +176,7 @@ export default async function ApartmanDetail({
                 <div className="border border-line bg-pure p-7 lg:p-8">
                   <h2 className="text-h3 text-ink">Mám zájem o apartmán</h2>
                   <p className="mt-2 text-sm text-stone">
-                    Ozve se Vám {site.makler.jmeno}.
+                    Ozveme se Vám co nejdříve.
                   </p>
                   <div className="hairline-gold my-6" />
                   <InquiryForm apartman={apartmanLabel} apartmanSlug={apt.slug} compact />

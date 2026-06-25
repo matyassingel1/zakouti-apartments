@@ -49,6 +49,16 @@
     background: var(--color-gold-300);
     color: var(--color-ink);
   }
+  /* Číselná pole bez „šipek" — hodnoty se píší přímo (admin). */
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
   h1, h2, h3 {
     font-family: var(--font-display);
     font-weight: 400;
@@ -70,15 +80,15 @@
 @layer utilities {
   .text-display-1 {
     font-family: var(--font-display);
-    font-size: clamp(3.5rem, 8vw, 8.25rem);
-    line-height: 1;
+    font-size: clamp(2.75rem, 6vw, 6.5rem);
+    line-height: 1.02;
     letter-spacing: -0.025em;
     font-weight: 400;
   }
   .text-display-2 {
     font-family: var(--font-display);
-    font-size: clamp(2.5rem, 6vw, 5.5rem);
-    line-height: 1.04;
+    font-size: clamp(2.25rem, 5.2vw, 4.75rem);
+    line-height: 1.06;
     letter-spacing: -0.02em;
     font-weight: 400;
   }

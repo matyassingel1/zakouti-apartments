@@ -9,6 +9,7 @@ import { RidgeDivider, MonogramZ } from "@/components/ui/GoldRidge";
 import { ContourField, Aurora, TopoRings, Magnetic } from "@/components/ui/Decor";
 import { CountUp } from "@/components/ui/CountUp";
 import { ApartmentCard } from "@/components/apartments/ApartmentCard";
+import { VideoTour } from "@/components/home/VideoTour";
 import { getApartments } from "@/lib/data";
 import { site } from "@/data/site";
 import { fixWidows } from "@/lib/utils";
@@ -54,8 +55,8 @@ export default async function HomePage() {
               <WordReveal
                 as="h2"
                 className="mt-6 text-h1 text-ink"
-                text="Nové apartmány v lokalitě Zákoutí"
-                emphasize={["Zákoutí"]}
+                text="Nové apartmány pro Vás"
+                emphasize={["Vás"]}
               />
             </div>
             <div className="col-span-12 lg:col-span-6 lg:col-start-7 lg:pt-16">
@@ -83,6 +84,34 @@ export default async function HomePage() {
             <p className="mono mt-3 text-xs text-stone">
               Vizualizace bytového domu Zákoutí — Deštné v Orlických horách.
             </p>
+          </Reveal>
+        </Container>
+      </section>
+
+      {/* Video prohlídka — cinematic tmavá sekce */}
+      <section className="relative overflow-hidden bg-ink py-24 text-paper lg:py-32">
+        <Aurora />
+        <Container className="relative">
+          <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
+            <div>
+              <Reveal>
+                <Eyebrow className="text-gold-500">Video prohlídka</Eyebrow>
+              </Reveal>
+              <WordReveal
+                as="h2"
+                className="mt-5 text-h1 text-paper"
+                text="Projděte si Zákoutí ve videu"
+                emphasize={["videu"]}
+              />
+            </div>
+            <Reveal>
+              <p className="max-w-sm text-body-lg text-pretty text-paper/70">
+                {fixWidows("Podívejte se na projekt a jeho okolí v srdci Orlických hor.")}
+              </p>
+            </Reveal>
+          </div>
+          <Reveal className="mt-12">
+            <VideoTour src="/video/zakouti.mp4" poster="/video/poster.jpg" />
           </Reveal>
         </Container>
       </section>
@@ -354,7 +383,7 @@ export default async function HomePage() {
           />
           <Reveal className="mt-8">
             <p className="mx-auto max-w-xl text-body-lg text-stone">
-              {site.makler.jmeno} · {site.makler.telefon} · {site.makler.email}
+              {site.makler.telefon} · {site.makler.email}
             </p>
           </Reveal>
           <Reveal className="mt-10">

@@ -67,7 +67,7 @@ export async function Footer() {
           {/* Kontakt */}
           <div>
             <p className="eyebrow text-gold-500">Kontakt</p>
-            <p className="mt-5 text-sm text-paper/90">{site.makler.jmeno}</p>
+            <p className="mt-5 text-sm text-paper/90">Prodej apartmánů Zákoutí</p>
             <p className="mt-2 text-sm text-paper/70">{site.makler.kancelar}</p>
             <a
               href={`tel:${settings.telefon.replace(/\s/g, "")}`}
