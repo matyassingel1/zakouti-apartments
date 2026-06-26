@@ -16,9 +16,9 @@ async function uploadFile(file: File, prefix: string): Promise<string> {
   fd.append("file", file);
   fd.append("prefix", prefix);
   const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
-  if (!res.ok) throw new Error("Nahrání selhalo.");
-  const { url } = await res.json();
-  return url as string;
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data?.error || "Nahrání selhalo.");
+  return data.url as string;
 }
 
 const input =
@@ -59,8 +59,8 @@ export function ApartmanForm({ apartman }: { apartman?: ApartmanRecord }) {
     try {
       const url = await uploadFile(file, "pudorys");
       setPudorysy((prev) => [...prev, url]);
-    } catch {
-      setError("Nahrání půdorysu selhalo.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Nahrání půdorysu selhalo.");
     } finally {
       setUploading(false);
     }
@@ -72,8 +72,8 @@ export function ApartmanForm({ apartman }: { apartman?: ApartmanRecord }) {
     try {
       const url = await uploadFile(file, "foto");
       setFotky((prev) => [...prev, { src: url, alt: "", popis: "" }]);
-    } catch {
-      setError("Nahrání fotografie selhalo.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Nahrání fotografie selhalo.");
     } finally {
       setUploading(false);
     }
