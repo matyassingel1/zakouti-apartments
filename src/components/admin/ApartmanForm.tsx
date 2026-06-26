@@ -25,11 +25,23 @@ const input =
   "w-full border border-line bg-paper px-3 py-2.5 text-ink outline-none focus:border-gold-500";
 const labelCls = "eyebrow mb-1.5 block";
 
+/** Vyrobí bezpečný slug pro URL: bez diakritiky, malá písmena, jen a–z 0–9 a pomlčky. */
+function slugify(s: string): string {
+  return s
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 export function ApartmanForm({ apartman }: { apartman?: ApartmanRecord }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  // U existujícího apartmánu slug nepřepisuj; u nového se sám doplní z označení.
+  const [slugEdited, setSlugEdited] = useState(!!apartman);
 
   const [f, setF] = useState({
     oznaceni: apartman?.oznaceni ?? "",
@@ -82,12 +94,13 @@ export function ApartmanForm({ apartman }: { apartman?: ApartmanRecord }) {
   function submit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
-    if (!f.oznaceni.trim() || !f.slug.trim() || !f.popis.trim()) {
-      setError("Vyplňte označení, slug a popis.");
+    const finalSlug = slugify(f.slug) || slugify(f.oznaceni);
+    if (!f.oznaceni.trim() || !finalSlug || !f.popis.trim()) {
+      setError("Vyplňte označení a popis (slug se doplní sám).");
       return;
     }
     const payload: ApartmanInput = {
-      slug: f.slug.trim(),
+      slug: finalSlug,
       oznaceni: f.oznaceni.trim(),
       dispozice: f.dispozice,
       podlazi: f.podlazi,
@@ -121,11 +134,35 @@ export function ApartmanForm({ apartman }: { apartman?: ApartmanRecord }) {
       <div className="grid gap-5 sm:grid-cols-2">
         <div>
           <label className={labelCls}>Označení *</label>
-          <input className={input} value={f.oznaceni} onChange={(e) => set("oznaceni", e.target.value)} placeholder="A11" />
+          <input
+            className={input}
+            value={f.oznaceni}
+            onChange={(e) => {
+              const v = e.target.value;
+              setF((prev) => ({ ...prev, oznaceni: v, slug: slugEdited ? prev.slug : slugify(v) }));
+            }}
+            placeholder="A11"
+          />
         </div>
         <div>
           <label className={labelCls}>Slug (URL) *</label>
-          <input className={input} value={f.slug} onChange={(e) => set("slug", e.target.value)} placeholder="a11" />
+          <input
+            className={input}
+            value={f.slug}
+            onChange={(e) => {
+              setSlugEdited(true);
+              set(
+                "slug",
+                e.target.value
+                  .normalize("NFD")
+                  .replace(/[̀-ͯ]/g, "")
+                  .toLowerCase()
+                  .replace(/[^a-z0-9-]+/g, "-")
+                  .replace(/^-+/, "")
+              );
+            }}
+            placeholder="a11 (doplní se sám)"
+          />
         </div>
         <div>
           <label className={labelCls}>Dispozice *</label>
