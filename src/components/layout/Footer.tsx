@@ -93,7 +93,12 @@ export async function Footer() {
 
         <div className="relative mt-16 flex flex-col gap-3 border-t border-paper/10 pt-6 text-xs text-paper/50 sm:flex-row sm:items-center sm:justify-between">
           <p>© 2026 Zákoutí Apartments. Všechna práva vyhrazena.</p>
-          <p>Zásady zpracování osobních údajů · Změny vyhrazeny</p>
+          <p className="flex flex-wrap items-center gap-x-4 gap-y-1">
+            <span>Zásady zpracování osobních údajů · Změny vyhrazeny</span>
+            <Link href="/admin" className="link-underline text-paper/40 transition-colors hover:text-gold-300">
+              Administrace
+            </Link>
+          </p>
         </div>
       </div>
     </footer>
