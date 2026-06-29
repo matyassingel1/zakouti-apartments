@@ -104,7 +104,7 @@ export default async function ApartmanDetail({
         <Container>
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-16">
             {/* Levý sloupec — galerie + popis + parametry */}
-            <div className="col-span-12 lg:col-span-7">
+            <div className="lg:col-span-7">
               <Reveal>
                 <DetailGallery apt={apt} />
               </Reveal>
@@ -171,7 +171,7 @@ export default async function ApartmanDetail({
             </div>
 
             {/* Pravý sloupec — sticky formulář */}
-            <div className="col-span-12 lg:col-span-5">
+            <div className="lg:col-span-5">
               <div id="poptavka" className="lg:sticky lg:top-28">
                 <div className="border border-line bg-pure p-7 lg:p-8">
                   <h2 className="text-h3 text-ink">Mám zájem o apartmán</h2>

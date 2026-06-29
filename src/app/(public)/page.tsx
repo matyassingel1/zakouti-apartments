@@ -48,7 +48,7 @@ export default async function HomePage() {
         <TopoRings className="-left-20 top-8 h-[320px] w-[320px] opacity-40" />
         <Container className="relative">
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-16">
-            <div className="col-span-12 lg:col-span-5">
+            <div className="lg:col-span-5">
               <Reveal>
                 <Eyebrow>Developerský projekt</Eyebrow>
               </Reveal>
@@ -59,7 +59,7 @@ export default async function HomePage() {
                 emphasize={["Vás"]}
               />
             </div>
-            <div className="col-span-12 lg:col-span-6 lg:col-start-7 lg:pt-16">
+            <div className="lg:col-span-6 lg:col-start-7 lg:pt-16">
               <Reveal>
                 <p className="text-lead text-pretty text-stone">
                   {fixWidows(
@@ -121,7 +121,7 @@ export default async function HomePage() {
         <ContourField className="opacity-100" opacity={0.12} drift={9} flip />
         <Container className="relative">
           <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-16">
-            <Reveal className="col-span-12 lg:col-span-6">
+            <Reveal className="lg:col-span-6">
               <Photo
                 src="/foto/okoli-07.jpg"
                 alt="Objekt Zákoutí a jeho okolí v Orlických horách."
@@ -129,7 +129,7 @@ export default async function HomePage() {
                 parallax
               />
             </Reveal>
-            <div className="col-span-12 lg:col-span-5 lg:col-start-8">
+            <div className="lg:col-span-5 lg:col-start-8">
               <Reveal>
                 <Eyebrow>Prémiová lokalita</Eyebrow>
               </Reveal>
@@ -227,13 +227,13 @@ export default async function HomePage() {
       <section className="bg-ivory py-24 lg:py-32">
         <Container>
           <div className="grid grid-cols-1 items-end gap-8 lg:grid-cols-12">
-            <div className="col-span-12 lg:col-span-7">
+            <div className="lg:col-span-7">
               <Reveal>
                 <Eyebrow>Interiér</Eyebrow>
               </Reveal>
               <WordReveal as="h2" className="mt-5 text-h1 text-ink" text="Jak se v Zákoutí bydlí" />
             </div>
-            <Reveal className="col-span-12 lg:col-span-4 lg:col-start-9">
+            <Reveal className="lg:col-span-4 lg:col-start-9">
               <p className="text-body-lg text-pretty text-stone">
                 {fixWidows("Teplé dřevo, přírodní materiály a klid hor v každém detailu.")}
               </p>
@@ -247,7 +247,7 @@ export default async function HomePage() {
           </div>
 
           <div className="mt-12 grid grid-cols-1 gap-6 lg:grid-cols-12">
-            <Reveal className="col-span-12 lg:col-span-8">
+            <Reveal className="lg:col-span-8">
               <Photo
                 src="/foto/interiery/obyvaci-pokoj.webp"
                 alt="Obývací pokoj s jídelnou — rohová sedačka, kruhové LED svítidlo a výhled do hor."
@@ -257,7 +257,7 @@ export default async function HomePage() {
                 Ilustrativní vizualizace — finální provedení dle standardů.
               </p>
             </Reveal>
-            <div className="col-span-12 grid gap-6 lg:col-span-4">
+            <div className="grid gap-6 lg:col-span-4">
               <Reveal index={1}>
                 <Photo
                   src="/foto/interiery/loznice.webp"

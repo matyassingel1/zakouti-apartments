@@ -31,7 +31,7 @@ export default async function KontaktPage() {
         <Container>
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
             {/* Kontaktní info */}
-            <div className="col-span-12 lg:col-span-5">
+            <div className="lg:col-span-5">
               <Reveal>
                 <Eyebrow>Prodej a zprostředkování</Eyebrow>
                 <p className="mt-5 font-display text-3xl text-ink">Prodej apartmánů Zákoutí</p>
@@ -81,7 +81,7 @@ export default async function KontaktPage() {
             </div>
 
             {/* Formulář */}
-            <div className="col-span-12 lg:col-span-6 lg:col-start-7">
+            <div className="lg:col-span-6 lg:col-start-7">
               <Reveal className="border border-line bg-pure p-7 lg:p-9">
                 <h2 className="text-h3 text-ink">Napište nám</h2>
                 <p className="mt-2 text-sm text-stone">

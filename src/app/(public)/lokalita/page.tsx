@@ -80,10 +80,10 @@ export default function LokalitaPage() {
               <RouteRidge className="h-full w-full" />
             </div>
 
-            <div className="col-span-12 space-y-20 lg:col-span-10 lg:col-start-2">
+            <div className="space-y-20 lg:col-span-10 lg:col-start-2">
               {SEKCE.map((s, i) => (
                 <Reveal key={s.nadpis} className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12">
-                  <div className="col-span-12 lg:col-span-5">
+                  <div className="lg:col-span-5">
                     <span className="flex h-12 w-12 items-center justify-center rounded-full border border-gold-300 bg-gold-100 text-gold-700">
                       <s.icon size={22} strokeWidth={1.5} />
                     </span>
@@ -92,7 +92,7 @@ export default function LokalitaPage() {
                     </p>
                     <h2 className="mt-2 text-h2 text-ink">{s.nadpis}</h2>
                   </div>
-                  <div className="col-span-12 lg:col-span-6 lg:col-start-7 lg:pt-2">
+                  <div className="lg:col-span-6 lg:col-start-7 lg:pt-2">
                     <p className="text-body-lg text-pretty text-stone">{fixWidows(s.text)}</p>
                     {s.foto && (
                       <Photo
