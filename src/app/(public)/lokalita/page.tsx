@@ -74,7 +74,7 @@ export default function LokalitaPage() {
 
       <section className="py-20 lg:py-28">
         <Container>
-          <div className="relative grid grid-cols-12 gap-x-8">
+          <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-x-8">
             {/* Kontura / trasa */}
             <div className="pointer-events-none absolute left-6 top-0 hidden h-full w-16 lg:block">
               <RouteRidge className="h-full w-full" />
@@ -82,7 +82,7 @@ export default function LokalitaPage() {
 
             <div className="col-span-12 space-y-20 lg:col-span-10 lg:col-start-2">
               {SEKCE.map((s, i) => (
-                <Reveal key={s.nadpis} className="grid grid-cols-12 items-start gap-8">
+                <Reveal key={s.nadpis} className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12">
                   <div className="col-span-12 lg:col-span-5">
                     <span className="flex h-12 w-12 items-center justify-center rounded-full border border-gold-300 bg-gold-100 text-gold-700">
                       <s.icon size={22} strokeWidth={1.5} />

@@ -47,7 +47,7 @@ export default async function HomePage() {
         <ContourField className="opacity-100" opacity={0.13} drift={8} />
         <TopoRings className="-left-20 top-8 h-[320px] w-[320px] opacity-40" />
         <Container className="relative">
-          <div className="grid grid-cols-12 gap-10 lg:gap-16">
+          <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-16">
             <div className="col-span-12 lg:col-span-5">
               <Reveal>
                 <Eyebrow>Developerský projekt</Eyebrow>
@@ -120,7 +120,7 @@ export default async function HomePage() {
       <section className="relative overflow-hidden bg-ivory py-24 lg:py-32">
         <ContourField className="opacity-100" opacity={0.12} drift={9} flip />
         <Container className="relative">
-          <div className="grid grid-cols-12 items-center gap-10 lg:gap-16">
+          <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-16">
             <Reveal className="col-span-12 lg:col-span-6">
               <Photo
                 src="/foto/okoli-07.jpg"
@@ -226,7 +226,7 @@ export default async function HomePage() {
       {/* Interiér — editoriální trio */}
       <section className="bg-ivory py-24 lg:py-32">
         <Container>
-          <div className="grid grid-cols-12 items-end gap-8">
+          <div className="grid grid-cols-1 items-end gap-8 lg:grid-cols-12">
             <div className="col-span-12 lg:col-span-7">
               <Reveal>
                 <Eyebrow>Interiér</Eyebrow>
@@ -246,7 +246,7 @@ export default async function HomePage() {
             </Reveal>
           </div>
 
-          <div className="mt-12 grid grid-cols-12 gap-6">
+          <div className="mt-12 grid grid-cols-1 gap-6 lg:grid-cols-12">
             <Reveal className="col-span-12 lg:col-span-8">
               <Photo
                 src="/foto/interiery/obyvaci-pokoj.webp"

@@ -31,6 +31,11 @@ export const site = {
     odkaz: "https://www.google.com/maps/place/De%C5%A1tn%C3%A9+v+Orlick%C3%BDch+hor%C3%A1ch",
     embed:
       "https://www.openstreetmap.org/export/embed.html?bbox=16.30%2C50.28%2C16.41%2C50.33&layer=mapnik&marker=50.30357%2C16.35361",
+    // Realitní kancelář — Baťkovo nám. 552 (Hotel Paříž), Hradec Králové (Google bod)
+    kancelarEmbed:
+      "https://www.google.com/maps?q=Ba%C5%A5kovo+n%C3%A1m%C4%9Bst%C3%AD+552,+Hradec+Kr%C3%A1lov%C3%A9&z=16&output=embed",
+    kancelarOdkaz:
+      "https://www.google.com/maps/search/?api=1&query=Ba%C5%A5kovo+n%C3%A1m%C4%9Bst%C3%AD+552%2C+Hradec+Kr%C3%A1lov%C3%A9",
   },
 } as const;
 

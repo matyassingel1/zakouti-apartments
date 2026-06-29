@@ -102,7 +102,7 @@ export default async function ApartmanDetail({
 
       <section className="py-16 lg:py-24">
         <Container>
-          <div className="grid grid-cols-12 gap-10 lg:gap-16">
+          <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-16">
             {/* Levý sloupec — galerie + popis + parametry */}
             <div className="col-span-12 lg:col-span-7">
               <Reveal>

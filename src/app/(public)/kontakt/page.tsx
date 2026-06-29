@@ -29,7 +29,7 @@ export default async function KontaktPage() {
 
       <section className="py-16 lg:py-24">
         <Container>
-          <div className="grid grid-cols-12 gap-12 lg:gap-16">
+          <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
             {/* Kontaktní info */}
             <div className="col-span-12 lg:col-span-5">
               <Reveal>
@@ -95,22 +95,45 @@ export default async function KontaktPage() {
         </Container>
       </section>
 
-      {/* Mapa */}
+      {/* Mapy — projekt + realitní kancelář */}
       <section className="bg-ivory py-16 lg:py-20">
         <Container>
-          <Reveal>
-            <Eyebrow>Lokalita projektu</Eyebrow>
-            <h2 className="mt-3 text-h3 text-ink">{site.adresaProjektu}</h2>
-          </Reveal>
-          <Reveal className="mt-7 overflow-hidden border border-line">
-            <iframe
-              title="Mapa — Deštné v Orlických horách, lokalita Zákoutí"
-              src={site.mapa.embed}
-              className="h-[400px] w-full"
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            />
-          </Reveal>
+          <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-10">
+            <Reveal>
+              <Eyebrow>Lokalita projektu</Eyebrow>
+              <h2 className="mt-3 text-h3 text-ink">{site.adresaProjektu}</h2>
+              <div className="mt-6 overflow-hidden border border-line">
+                <iframe
+                  title="Mapa — Deštné v Orlických horách, lokalita Zákoutí"
+                  src={site.mapa.embed}
+                  className="h-[340px] w-full"
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
+              </div>
+            </Reveal>
+            <Reveal index={1}>
+              <Eyebrow>Realitní kancelář</Eyebrow>
+              <h2 className="mt-3 text-h3 text-ink">{site.makler.kancelar}</h2>
+              <div className="mt-6 overflow-hidden border border-line">
+                <iframe
+                  title="Mapa — realitní kancelář, Hradec Králové"
+                  src={site.mapa.kancelarEmbed}
+                  className="h-[340px] w-full"
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
+              </div>
+              <a
+                href={site.mapa.kancelarOdkaz}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="link-underline mono mt-3 inline-flex items-center gap-2 text-sm text-gold-900"
+              >
+                Otevřít kancelář v Google Mapách
+              </a>
+            </Reveal>
+          </div>
         </Container>
       </section>
     </>
